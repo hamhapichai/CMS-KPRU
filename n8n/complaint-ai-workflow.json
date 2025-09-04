@@ -1,0 +1,93 @@
+{
+  "name": "Complaint AI Suggestion with Departments (Docker)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "complaint/new",
+        "methods": ["POST"]
+      },
+      "id": "WebhookTrigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "complaintWebhook"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/api/complaints/{{$json[\"body\"][\"ComplaintId\"]}}",
+        "responseFormat": "json",
+        "options": {}
+      },
+      "id": "FetchComplaint",
+      "name": "Fetch Complaint",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [550, 200]
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/api/departments",
+        "responseFormat": "json",
+        "options": {}
+      },
+      "id": "FetchDepartments",
+      "name": "Fetch Departments",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [550, 400]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "prompt": "คุณคือระบบช่วยจัดการร้องเรียน\n\nเรื่องร้องเรียน:\nเรื่อง: {{$json[\"FetchComplaint\"][\"Subject\"]}}\nรายละเอียด: {{$json[\"FetchComplaint\"][\"Message\"]}}\n\nหน่วยงานที่มีอยู่ (เลือกจากนี้เท่านั้น): {{$json[\"FetchDepartments\"]}}\n\nโปรดเลือกหน่วยงานที่เหมาะสมที่สุด 1 แห่ง และตอบเป็น JSON เท่านั้น:\n{\n  \"departmentId\": <เลข DepartmentId>,\n  \"summary\": \"<สรุปสั้นๆ>\",\n  \"reason\": \"<เหตุผล>\",\n  \"confidence\": <0-1>\n}",
+        "temperature": 0.2
+      },
+      "id": "AIProcessing",
+      "name": "AI Processing",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "OpenAI_Credentials_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/api/AISuggestions/callback",
+        "method": "POST",
+        "responseFormat": "json",
+        "jsonParameters": true,
+        "options": {},
+        "body": "={ {\n   \"ComplaintId\": $json[\"body\"][\"ComplaintId\"],\n   \"SuggestedDeptId\": $json[\"choices\"][0][\"message\"][\"content\"].departmentId,\n   \"SuggestedCategory\": $json[\"choices\"][0][\"message\"][\"content\"].summary,\n   \"Reason\": $json[\"choices\"][0][\"message\"][\"content\"].reason,\n   \"ConfidenceScore\": $json[\"choices\"][0][\"message\"][\"content\"].confidence\n} }"
+      },
+      "id": "SaveAISuggestion",
+      "name": "Save AI Suggestion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1150, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          { "node": "FetchComplaint", "type": "main", "index": 0 },
+          { "node": "FetchDepartments", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "FetchComplaint": {
+      "main": [[{ "node": "AIProcessing", "type": "main", "index": 0 }]]
+    },
+    "FetchDepartments": {
+      "main": [[{ "node": "AIProcessing", "type": "main", "index": 0 }]]
+    },
+    "AIProcessing": {
+      "main": [[{ "node": "Save AI Suggestion", "type": "main", "index": 0 }]]
+    }
+  }
+}
