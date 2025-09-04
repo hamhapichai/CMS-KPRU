@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ทดสอบส่งเรื่องร้องเรียนพร้อมไฟล์</title>
+</head>
+<body>
+    <h1>ทดสอบส่งเรื่องร้องเรียนพร้อมไฟล์</h1>
+    <form id="complaintForm" enctype="multipart/form-data">
+        <div>
+            <label>ชื่อผู้แจ้ง:</label>
+            <input type="text" name="contactName" value="ผู้ทดสอบไฟล์" required>
+        </div>
+        <div>
+            <label>อีเมล:</label>
+            <input type="email" name="contactEmail" value="testfile@example.com" required>
+        </div>
+        <div>
+            <label>เบอร์โทร:</label>
+            <input type="text" name="contactPhone" value="0801234567">
+        </div>
+        <div>
+            <label>หัวข้อ:</label>
+            <input type="text" name="subject" value="ทดสอบการส่งไฟล์แนบ" required>
+        </div>
+        <div>
+            <label>รายละเอียด:</label>
+            <textarea name="message" required>ทดสอบการส่งเรื่องร้องเรียนพร้อมไฟล์แนบ</textarea>
+        </div>
+        <div>
+            <label>ไฟล์แนบ:</label>
+            <input type="file" name="attachments" multiple accept="image/*,application/pdf">
+        </div>
+        <div>
+            <label>
+                <input type="checkbox" name="isAnonymous" value="false"> แจ้งแบบไม่ระบุชื่อ
+            </label>
+        </div>
+        <button type="submit">ส่งเรื่องร้องเรียน</button>
+    </form>
+
+    <script>
+    document.getElementById('complaintForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch('http://localhost:5000/api/complaints', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('ส่งเรื่องร้องเรียนสำเร็จ! Ticket ID: ' + result.ticketId);
+                this.reset();
+            } else {
+                alert('เกิดข้อผิดพลาด: ' + result.message);
+            }
+        } catch (error) {
+            alert('เกิดข้อผิดพลาด: ' + error.message);
+        }
+    });
+    </script>
+</body>
+</html>
