@@ -18,7 +18,7 @@
 
 ---
 
-## � สารบัญ | Table of Contents
+## 📄 สารบัญ | Table of Contents
 
 - [🎯 เกี่ยวกับโครงการ](#-เกี่ยวกับโครงการ)
 - [✨ คุณสมบัติหลัก](#-คุณสมบัติหลัก)
@@ -29,11 +29,11 @@
 - [🤝 การมีส่วนร่วม](#-การมีส่วนร่วม)
 - [📄 สิทธิ์การใช้งาน](#-สิทธิ์การใช้งาน)
 
-## �📚 About the Project
+## 📚 About the Project
 
 ## 🎯 เกี่ยวกับโครงการ | About the Project
 
-ระบบ **CMS-KPRU** เป็นระบบจัดการข้อร้องเรียนที่ขับเคลื่อนด้วยปัญญาประดิษฐ์ (AI) ซึ่งได้รับการพัฒนาขึ้นเพื่อปรับปรุงและยกระดับการจัดการข้อร้องเรียนของ **คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยราชภัฏกำแพงเพชร**
+ระบบ **CMS-KPRU** เป็นระบบจัดการข้อร้องเรียนที่ขับเคลื่อนด้วยปัญญาประดิษฐ์ (AI) ซึ่งได้รับการพัฒนาขึ้นเพื่อปรับปรุงและยกระดับการจัดการข้อร้องเรียนของ **ระบบสายตรงคณบดี คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยราชภัฏกำแพงเพชร**
 
 **CMS-KPRU** is an innovative AI-powered complaint management system designed to revolutionize complaint handling processes at the **Faculty of Science and Technology, Kamphaeng Phet Rajabhat University (KPRU)**.
 
@@ -47,16 +47,12 @@
 | 📊 **จัดให้มีระบบติดตามแบบเรียลไทม์** | **Provide** real-time tracking for all stakeholders |
 | 📱 **ปรับปรุงการสื่อสารผ่านการแจ้งเตือนอัตโนมัติ** | **Streamline** communication through automated notifications |
 
-### 🏛️ สถาบัน | Institution
-**มหาวิทยาลัยราชภัฏกำแพงเพชร | Kamphaeng Phet Rajabhat University**
-- 🏢 คณะวิทยาศาสตร์และเทคโนโลยี | Faculty of Science and Technology
-- 📍 จังหวัดกำแพงเพชร ประเทศไทย | Kamphaeng Phet Province, Thailand
 ## ✨ คุณสมบัติหลัก | Key Features
 
-### � ส่วนสำหรับประชาชน | Public Interface
-- **📝 ส่งข้อร้องเรียน**: แบบฟอร์มเว็บที่ใช้งานง่ายสำหรับประชาชน  
+### 🤵 ส่วนสำหรับผู้ร้องเรียน | Public Interface
+- **📝 ส่งข้อร้องเรียน**: แบบฟอร์มเว็บที่ใช้งานง่าย
 - **🎫 ติดตามสถานะ**: ระบบ Ticket ID เฉพาะสำหรับติดตามสถานะแบบเรียลไทม์  
-- **🔍 อัปเดตสถานะ**: ติดตามความคืบหนน้าการแก้ไขข้อร้องเรียนแบบสด  
+- **🔍 อัปเดตสถานะ**: ติดตามความคืบหนน้าการแก้ไขข้อร้องเรียนแบบ Real-Time 
 
 ### 🤖 การวิเคราะห์ด้วย AI | AI-Powered Analysis
 - **📊 การจัดเส้นทางอัจฉริยะ**: AI วิเคราะห์อัตโนมัติเพื่อแนะนำหน่วยงานที่เหมาะสม  
@@ -68,15 +64,15 @@
 - **👥 การจัดการหน่วยงาน**: การเข้าถึงตามบทบาทสำหรับเจ้าหน้าที่และคณะกรรมการ  
 - **📋 การจัดการงาน**: การมอบหมายและติดตามการแก้ไขข้อร้องเรียน  
 
-### 🔔 การสื่อสารอัตโนมัติ | Automated Communications
+### 🔔 การแจ้งเตือนอัตโนมัติ | Automated Notification
 - **📧 แจ้งเตือนทางอีเมล**: การอัปเดตอีเมลอัตโนมัติไปยังผู้เกี่ยวข้อง  
 - **💬 การแจ้งเตือนผ่าน Line**: การแจ้งเตือนแบบเรียลไทม์ผ่านแอพ Line  
 - **📱 การแจ้งเตือนหลายช่องทาง**: ระบบแจ้งเตือนที่ครอบคลุม  
 
 ### 🔐 ระบบความปลอดภัย | Security Features
 - **🛡️ การยืนยันตัวตน JWT**: ระบบล็อกอินที่ปลอดภัยด้วย JSON Web Tokens  
-- **� การจัดการบทบาท**: ระบบควบคุมการเข้าถึงตามบทบาทผู้ใช้  
-- **🔒 การเข้ารหัสข้อมูล**: การป้องกันข้อมูลที่อ่อนไหวด้วยการเข้ารหัส  
+- **🛡️ การจัดการบทบาท**: ระบบควบคุมการเข้าถึงตามบทบาทผู้ใช้  
+- **🔒 การเข้ารหัสข้อมูล**: การป้องกันข้อมูลที่อ่อนไหวด้วยการเข้ารหัส
 ## 🛠️ เทคโนโลยีที่ใช้ | Technology Stack
 
 <div align="center">
@@ -182,7 +178,7 @@ git clone https://github.com/hamhapichai/CMS-KPRU.git
 cd CMS-KPRU
 ```
 
-#### 2️⃣ **�️ ตั้งค่าฐานข้อมูล | Database Setup**
+#### 2️⃣ **🛠️ ตั้งค่าฐานข้อมูล | Database Setup**
 
 **ตัวเลือกที่ 1: ใช้ PostgreSQL ที่ติดตั้งแล้ว | Option 1: Local PostgreSQL**
 ```powershell
@@ -349,64 +345,195 @@ CMS-KPRU/
 └── 🧪 test-upload.html              # Testing file
 ```
 
-### � ความสัมพันธ์ของฐานข้อมูล | Database Relationships
+### 📊 ความสัมพันธ์ของฐานข้อมูล | Database Relationships
 
 ```mermaid
 erDiagram
-    User ||--o{ Complaint : submits
-    User ||--o{ ComplaintAssignment : "assigned to"
-    Department ||--o{ ComplaintAssignment : "handles"
-    Department ||--o{ User : "belongs to"
-    Complaint ||--o{ ComplaintAssignment : "assigned"
-    Complaint ||--o{ ComplaintLog : "has logs"
-    Complaint ||--o{ Attachment : "has files"
-    Complaint ||--o{ AISuggestion : "analyzed by"
-    ComplaintCategory ||--o{ ComplaintCategoryMap : "mapped to"
-    Complaint ||--o{ ComplaintCategoryMap : "categorized"
+    %% Core entities relationships
+    Role ||--o{ User : "has"
+    Department ||--o{ User : "employs"
+    User ||--o{ ComplaintAssignment : "assigns"
+    User ||--o{ ComplaintAssignment : "is_assigned"
+    User ||--o{ ComplaintLog : "performs_action"
     
-    User {
-        int Id PK
-        string Username
-        string Email
-        string PasswordHash
-        int DepartmentId FK
-        int RoleId FK
-        bool IsActive
-        datetime CreatedAt
-    }
+    %% Complaint related relationships
+    Complaint ||--o{ ComplaintAssignment : "has_assignments"
+    Complaint ||--o{ ComplaintLog : "has_history"
+    Complaint ||--o{ Attachment : "has_files"
+    Complaint ||--o{ AISuggestion : "analyzed_by_AI"
+    Complaint ||--o{ ComplaintCategoryMap : "categorized_as"
     
-    Complaint {
-        int Id PK
-        string Title
-        string Description
-        string Status
-        int SubmittedById FK
-        datetime SubmittedAt
-        datetime UpdatedAt
-        bool IsDeleted
+    %% Department assignments
+    Department ||--o{ ComplaintAssignment : "receives"
+    Department ||--o{ AISuggestion : "suggested_for"
+    Department ||--o{ ComplaintLog : "involved_in"
+    
+    %% Category mapping
+    ComplaintCategory ||--o{ ComplaintCategoryMap : "mapped_to"
+    
+    %% Entity definitions with actual database fields
+    Role {
+        int RoleId PK
+        string RoleName UK "UNIQUE"
     }
     
     Department {
-        int Id PK
-        string Name
-        string Code
-        string Description
-        bool IsActive
-        bool IsDeleted
+        int DepartmentId PK
+        string DepartmentName UK "UNIQUE"
+        string Description "nullable"
+        bool IsDeleted "default false"
+    }
+    
+    User {
+        int UserId PK
+        string Username UK "UNIQUE"
+        string PasswordHash
+        string Email UK "UNIQUE"
+        string FullName
+        int RoleId FK
+        int DepartmentId FK "nullable"
+        datetime LastLoginAt "nullable"
+        bool IsActive "default true"
+    }
+    
+    Complaint {
+        int ComplaintId PK
+        string ContactName "nullable for anonymous"
+        string ContactEmail
+        string ContactPhone "nullable"
+        string Subject
+        string Message
+        datetime SubmissionDate "default now"
+        string CurrentStatus "default Submitted"
+        bool IsAnonymous "default false"
+        guid TicketId UK "UNIQUE tracking ID"
+        string AISummary "nullable AI analysis"
     }
     
     ComplaintAssignment {
-        int Id PK
+        int AssignmentId PK
         int ComplaintId FK
-        int AssignedToId FK
-        int DepartmentId FK
-        string Status
-        datetime AssignedAt
-        datetime DueDate
+        int AssignedToDeptId FK
+        int AssignedByUserId FK
+        int AssignedToUserId FK "nullable specific officer"
+        string Status "Forwarded/Received/InProgress/Completed/Closed"
+        string ForwardingNotes "nullable from Dean"
+        string ProcessingNotes "nullable from Officer"
+        datetime AssignedDate "default now"
+        datetime ReceivedDate "nullable"
+        datetime CompletedDate "nullable"
+        datetime ClosedDate "nullable"
+        bool IsActive "default true"
+    }
+    
+    ComplaintLog {
+        int LogId PK
+        int ComplaintId FK
+        int UserId FK "nullable system actions"
+        int DepartmentId FK "nullable"
+        string Action "Forwarded/Received/InProgress etc"
+        string Notes "nullable description"
+        string PreviousStatus "nullable"
+        string NewStatus "nullable"
+        datetime Timestamp "default now"
+        string Metadata "nullable JSON data"
+    }
+    
+    Attachment {
+        int AttachmentId PK
+        int ComplaintId FK
+        string FileName
+        string FileUrl
+        string FileType
+        datetime UploadedAt "default now"
+    }
+    
+    AISuggestion {
+        int AISuggestionId PK
+        int ComplaintId FK
+        int SuggestedDeptId FK "nullable"
+        string SuggestedCategory "nullable"
+        string SummarizedByAI "nullable AI summary"
+        float ConfidenceScore "nullable 0-1"
+        datetime SuggestedAt "default now"
+        string N8nWorkflowId "nullable"
+    }
+    
+    ComplaintCategory {
+        int CategoryId PK
+        string CategoryName UK "UNIQUE"
+        string Description "nullable"
+    }
+    
+    ComplaintCategoryMap {
+        int MapId PK
+        int ComplaintId FK
+        int CategoryId FK
     }
 ```
 
-## � API Endpoints
+### 🔄 สถานะการทำงานของระบบ | System Workflow States
+
+```mermaid
+stateDiagram-v2
+    [*] --> Submitted : ผู้ร้องเรียนส่งเรื่อง
+    
+    Submitted --> AIAnalysis : AI วิเคราะห์เรื่อง
+    AIAnalysis --> Forwarded : คณบดีส่งต่อหน่วยงาน
+    
+    Forwarded --> Received : เจ้าหน้าที่รับเรื่อง
+    Received --> InProgress : เริ่มดำเนินการ
+    InProgress --> Completed : ดำเนินการเสร็จ
+    Completed --> Closed : คณบดีอนุมัติปิดเรื่อง
+    
+    %% Alternative paths
+    Forwarded --> Reassigned : ส่งต่อหน่วยงานอื่น
+    Reassigned --> Received
+    
+    InProgress --> OnHold : พักงาน
+    OnHold --> InProgress : กลับมาทำต่อ
+    
+    Completed --> Reopened : เปิดเรื่องใหม่
+    Reopened --> InProgress
+    
+    Closed --> [*] : เรื่องปิดแล้ว
+    
+    note right of AIAnalysis
+        AI แนะนำหน่วยงาน
+        และสรุปเรื่อง
+    end note
+    
+    note right of Forwarded
+        คณบดีสามารถเขียน
+        ForwardingNotes
+    end note
+    
+    note right of Completed
+        เจ้าหน้าที่เขียน
+        ProcessingNotes
+    end note
+```
+
+### 🏗️ โครงสร้างข้อมูลสำคัญ | Key Data Structures
+
+**🎫 ระบบติดตามเรื่อง | Tracking System:**
+- **TicketId** (GUID): รหัสติดตามเฉพาะสำหรับผู้ร้องเรียน
+- **ComplaintId** (Integer): Primary key ภายในระบบ
+- **CurrentStatus**: สถานะล่าสุดของเรื่องร้องเรียน
+
+**👥 ระบบบทบาทผู้ใช้ | User Role System:**
+- **Dean**: คณบดี - อนุมัติและส่งต่อเรื่อง
+- **Officer**: เจ้าหน้าที่ - รับผิดชอบดำเนินการ
+- **Admin**: ผู้ดูแลระบบ - จัดการทั้งระบบ
+
+**🏢 หน่วยงานใน CMS-KPRU | Departments:**
+- คณะวิทยาศาสตร์และเทคโนโลยี
+- ฝ่ายวิชาการ
+- ฝ่ายกิจการนักศึกษา
+- ฝ่ายไอที
+- ฝ่ายอาคารสถานที่
+
+## API Endpoints
 
 ### 🔐 การยืนยันตัวตน | Authentication
 ```http
@@ -522,38 +649,6 @@ GET /api/reports/statistics?startDate=2025-01-01&endDate=2025-12-31
 Authorization: Bearer {your_jwt_token}
 ```
 
-## 🤝 การมีส่วนร่วม | Contributing
-
-เรายินดีต้อนรับการมีส่วนร่วมจากนักพัฒนาทุกท่าน! กรุณาทำตามขั้นตอนต่อไปนี้:
-
-**We welcome contributions from all developers! Please follow these steps:**
-
-### 📋 ขั้นตอนการ Contribute | Contribution Steps
-
-1. **🍴 Fork โปรเจกต์ | Fork the repository**
-   ```bash
-   # คลิกปุ่ม Fork บน GitHub หรือ
-   gh repo fork hamhapichai/CMS-KPRU
-   ```
-
-2. **🌿 สร้าง Feature Branch | Create a feature branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-
-3. **💾 Commit การเปลี่ยนแปลง | Commit your changes**
-   ```bash
-   git add .
-   git commit -m "Add amazing feature: รายละเอียดฟีเจอร์ใหม่"
-   ```
-
-4. **📤 Push ไปที่ Branch | Push to the branch**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-
-5. **🔄 เปิด Pull Request | Open a Pull Request**
-
 ### 📝 มาตรฐานการเขียนโค้ด | Coding Standards
 
 **🎯 Backend (.NET):**
@@ -598,24 +693,6 @@ dotnet build        # Build project
 - อัพเดต **API Documentation** ใน Swagger
 - เพิ่ม **Example Usage** ถ้าจำเป็น
 
-### 🐛 การรายงานบัก | Bug Reports
-
-เมื่อพบบัก กรุณาสร้าง Issue โดยระบุ:
-
-1. **📝 คำอธิบายปัญหา** | Problem Description
-2. **🔄 ขั้นตอนการทำ** | Steps to Reproduce  
-3. **✅ ผลลัพธ์ที่คาดหวัง** | Expected Result
-4. **❌ ผลลัพธ์ที่เกิดขึ้น** | Actual Result
-5. **💻 สภาพแวดล้อม** | Environment Details
-
-### 💡 การขอฟีเจอร์ใหม่ | Feature Requests
-
-สำหรับฟีเจอร์ใหม่ กรุณาระบุ:
-
-1. **🎯 วัตถุประสงค์** | Purpose/Goal
-2. **👤 ผู้ใช้กลุ่มเป้าหมาย** | Target Users
-3. **✨ รายละเอียดฟีเจอร์** | Feature Details
-4. **🔄 Alternative Solutions** | แนวทางอื่นที่เคยพิจารณา
 
 ### 👨‍💻 ทีมพัฒนา | Development Team
 
@@ -785,21 +862,6 @@ docker logs cms-kpru-db
 docker logs cms-kpru-n8n -f
 ```
 
-### 🆘 ขอความช่วยเหลือ | Getting Help
-
-หากยังแก้ปัญหาไม่ได้ สามารถขอความช่วยเหลือได้ที่:
-
-1. **📝 สร้าง GitHub Issue:** [New Issue](https://github.com/hamhapichai/CMS-KPRU/issues/new)
-2. **💬 ติดต่อทีมพัฒนา:** [@hamhapichai](https://github.com/hamhapichai)
-3. **📧 อีเมล:** apichai.butdee@example.com
-
-**📋 ข้อมูลที่ควรระบุเมื่อขอความช่วยเหลือ:**
-- 🖥️ ระบบปฏิบัติการ (Windows/macOS/Linux)
-- 📦 เวอร์ชัน .NET SDK (`dotnet --version`)
-- 📦 เวอร์ชัน Node.js (`node --version`)
-- 📄 Error message ที่เกิดขึ้น (Screenshot หรือ Text)
-- 🔄 ขั้นตอนที่ทำก่อนเกิดปัญหา
-
 ## 📄 สิทธิ์การใช้งาน | License
 
 โครงการนี้ได้รับอนุญาตภายใต้ **MIT License** - ดูรายละเอียดได้ที่ไฟล์ [LICENSE](LICENSE)
@@ -847,9 +909,6 @@ docker logs cms-kpru-n8n -f
 - **🤖 OpenAI** สำหรับ AI/ML capabilities
 - **🔄 n8n Community** สำหรับ workflow automation platform
 
-### 🤝 **Contributors**
-ขอขอบคุณนักพัฒนาและผู้ร่วมงานทุกท่านที่ช่วยปรับปรุงโครงการนี้:
-
 **Thank you to all contributors who help improve this project:**
 
 <div align="center">
@@ -870,12 +929,7 @@ docker logs cms-kpru-n8n -f
 </div>
 
 <div align="center">
-  <h3>💝 Made with Love</h3>
-  <p>
-    <strong>🎓 Developed by KPRU Development Team</strong><br>
-    <em>สร้างด้วยความตั้งใจเพื่อพัฒนาการบริหารจัดการที่ดีขึ้น</em><br>
-    <em>Built with dedication for better governance and transparency</em>
-  </p>
+  <h3>💝 Made with Passion</h3>
   
   <p>
     <strong>⭐ ถ้าโครงการนี้มีประโยชน์ กรุณา Star Repository นี้!</strong><br>
