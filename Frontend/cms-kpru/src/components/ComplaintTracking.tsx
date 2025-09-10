@@ -13,6 +13,7 @@ export default function ComplaintTracking({ complaintId }: ComplaintTrackingProp
 
   useEffect(() => {
     fetchLogs();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [complaintId]);
 
   const fetchLogs = async () => {
@@ -22,9 +23,9 @@ export default function ComplaintTracking({ complaintId }: ComplaintTrackingProp
       if (!res.ok) throw new Error('ไม่สามารถดึงข้อมูลประวัติได้');
       const data = await res.json();
       setLogs(data || []);
-    } catch (err: any) {
-      console.error('Error fetching logs:', err);
-      setError(err.message);
+    } catch (err) {
+      
+      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
     } finally {
       setLoading(false);
     }
@@ -147,7 +148,7 @@ export default function ComplaintTracking({ complaintId }: ComplaintTrackingProp
           {/* Timeline line */}
           <div className="absolute left-8 top-6 bottom-6 w-0.5 bg-gray-200"></div>
           
-          {logs.map((log, index) => (
+          {logs.map((log) => (
             <div key={log.logId} className="relative flex items-start mb-6 last:mb-0">
               {/* Timeline dot */}
               <div className="flex-shrink-0 w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white relative z-10">

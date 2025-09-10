@@ -5,7 +5,14 @@ import { getUserRoleFromJWT, getUserFromJWT } from '@/utils/jwt';
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ 
+      id?: string; 
+      username?: string; 
+      fullName?: string; 
+      role?: string; 
+      departmentId?: string;
+      departmentName?: string;
+  } | null>(null);
   
   useEffect(() => {
     if (typeof window !== "undefined") {

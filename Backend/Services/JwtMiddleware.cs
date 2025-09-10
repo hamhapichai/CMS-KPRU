@@ -37,15 +37,15 @@ namespace Backend.Services
                         ValidateAudience = false,
                         ClockSkew = TimeSpan.Zero
                     }, out SecurityToken validatedToken);
-                    
+
                     // Set user context จาก JWT claims
                     context.User = principal;
-                    
-                    Console.WriteLine($"JWT Claims: {string.Join(", ", principal.Claims.Select(c => $"{c.Type}={c.Value}"))}");
+
+
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"JWT validation error: {ex.Message}");
+
                     context.Response.StatusCode = 401;
                     await context.Response.WriteAsync("Invalid or expired token");
                     return;

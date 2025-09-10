@@ -51,14 +51,14 @@ namespace Backend.Controllers
                     // JSON
                     using var reader = new StreamReader(Request.Body);
                     var body = await reader.ReadToEndAsync();
-                    Console.WriteLine($"Received JSON body: {body}"); // Debug log
+
 
                     dto = JsonSerializer.Deserialize<ComplaintCreateDto>(body, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     }) ?? new ComplaintCreateDto { Subject = "", Message = "" };
 
-                    Console.WriteLine($"Parsed DTO: Subject={dto.Subject}, Message={dto.Message}, ContactName={dto.ContactName}"); // Debug log
+
                 }
 
                 var result = await _complaintsService.CreateComplaintAsync(dto, attachments);
@@ -73,7 +73,7 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}"); // Debug log
+
                 return BadRequest(new
                 {
                     success = false,
@@ -102,7 +102,7 @@ namespace Backend.Controllers
             try
             {
                 var complaint = await _complaintsService.GetComplaintDetailAsync(id);
-                
+
                 if (complaint == null)
                     return NotFound("ไม่พบเรื่องร้องเรียนนี้");
 
@@ -120,7 +120,7 @@ namespace Backend.Controllers
             try
             {
                 var suggestions = await _complaintsService.GetAISuggestionsAsync(id);
-                
+
                 if (suggestions == null)
                     return NotFound("ไม่พบคำแนะนำจาก AI สำหรับเรื่องร้องเรียนนี้");
 
@@ -137,15 +137,15 @@ namespace Backend.Controllers
         {
             try
             {
-                Console.WriteLine($"ForwardComplaint called - ID: {id}, DepartmentId: {dto.DepartmentId}, Notes: {dto.Notes}");
-                
+
+
                 // Debug: ดู claims ทั้งหมดใน JWT
-                Console.WriteLine($"User claims count: {User.Claims.Count()}");
+
                 foreach (var claim in User.Claims)
                 {
-                    Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
+
                 }
-                
+
                 // ดึง UserId จาก JWT Token - ใช้ ClaimTypes.NameIdentifier แทน "sub"
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 int? userId = null;
@@ -153,9 +153,9 @@ namespace Backend.Controllers
                 {
                     userId = parsedUserId;
                 }
-                
-                Console.WriteLine($"User ID from JWT: {userId}");
-                
+
+
+
                 var result = await _complaintsService.ForwardComplaintAsync(id, dto, userId);
 
                 return Ok(new
@@ -166,12 +166,12 @@ namespace Backend.Controllers
             }
             catch (NotFoundException ex)
             {
-                Console.WriteLine($"NotFoundException in ForwardComplaint: {ex.Message}");
+
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception in ForwardComplaint: {ex}");
+
                 return StatusCode(500, $"เกิดข้อผิดพลาด: {ex.Message}");
             }
         }

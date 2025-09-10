@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { getUserRoleFromJWT, getUserFromJWT } from '@/utils/jwt';
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface Complaint {
@@ -20,7 +19,17 @@ export default function UserComplaintsPage() {
     const [filteredComplaints, setFilteredComplaints] = useState<Complaint[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<{ 
+        id?: string; 
+        username?: string; 
+        fullName?: string; 
+        role?: string; 
+        departmentId?: string;
+        departmentName?: string;
+        userId?: string;
+        sub?: string;
+        nameid?: string;
+    } | null>(null);
     const [statusFilter, setStatusFilter] = useState<string>("all");
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [dateFrom, setDateFrom] = useState<string>("");
@@ -59,8 +68,8 @@ export default function UserComplaintsPage() {
             const data = await res.json();
             setComplaints(data);
             setFilteredComplaints(data);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
         } finally {
             setLoading(false);
         }

@@ -6,9 +6,9 @@ namespace Backend.DTOs
     {
         [Required(ErrorMessage = "ComplaintId is required")]
         public int ComplaintId { get; set; }
-        
+
         public string? Notes { get; set; }
-        
+
         public int UserId { get; set; } // เจ้าหน้าที่ที่รับเรื่อง
     }
 
@@ -16,9 +16,9 @@ namespace Backend.DTOs
     {
         [Required(ErrorMessage = "ComplaintId is required")]
         public int ComplaintId { get; set; }
-        
+
         public string? Notes { get; set; }
-        
+
         public int UserId { get; set; } // เจ้าหน้าที่ที่เริ่มดำเนินการ
     }
 
@@ -26,10 +26,10 @@ namespace Backend.DTOs
     {
         [Required(ErrorMessage = "ComplaintId is required")]
         public int ComplaintId { get; set; }
-        
+
         [Required(ErrorMessage = "ProcessingNotes is required")]
         public string ProcessingNotes { get; set; } = string.Empty;
-        
+
         public int UserId { get; set; } // เจ้าหน้าที่ที่ดำเนินการเสร็จ
     }
 
@@ -37,9 +37,9 @@ namespace Backend.DTOs
     {
         [Required(ErrorMessage = "ComplaintId is required")]
         public int ComplaintId { get; set; }
-        
+
         public string? Notes { get; set; }
-        
+
         public int UserId { get; set; } // คณบดีที่อนุมัติปิดเรื่อง
     }
 
@@ -47,10 +47,10 @@ namespace Backend.DTOs
     {
         [Required(ErrorMessage = "ComplaintId is required")]
         public int ComplaintId { get; set; }
-        
+
         [Required(ErrorMessage = "Reason is required")]
         public string Reason { get; set; } = string.Empty;
-        
+
         public int UserId { get; set; } // ผู้ปฏิเสธเรื่อง
     }
 

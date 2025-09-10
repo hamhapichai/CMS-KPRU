@@ -14,7 +14,7 @@ export default function TrackingTimeline({ timeline, ticketId, subject, currentS
       // ตรวจสอบว่า dateString เป็น valid date หรือไม่
       const date = new Date(dateString);
       if (isNaN(date.getTime())) {
-        console.error('Invalid date:', dateString);
+        
         return 'วันที่ไม่ถูกต้อง';
       }
       
@@ -26,8 +26,8 @@ export default function TrackingTimeline({ timeline, ticketId, subject, currentS
         minute: '2-digit',
         timeZone: 'Asia/Bangkok'
       });
-    } catch (error) {
-      console.error('Error formatting date:', dateString, error);
+    } catch {
+      
       return 'วันที่ไม่ถูกต้อง';
     }
   };

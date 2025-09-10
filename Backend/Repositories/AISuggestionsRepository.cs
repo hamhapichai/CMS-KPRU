@@ -17,14 +17,14 @@ namespace Backend.Repositories
         public async Task<AISuggestion> CreateAsync(AISuggestion aiSuggestion)
         {
             _logger.LogInformation("Creating AISuggestion for ComplaintId: {ComplaintId}", aiSuggestion.ComplaintId);
-            
+
             try
             {
                 _context.AISuggestions.Add(aiSuggestion);
                 await _context.SaveChangesAsync();
-                
+
                 _logger.LogInformation("AISuggestion created successfully with ID: {AISuggestionId}", aiSuggestion.AISuggestionId);
-                
+
                 // Reload with includes to get related data
                 var result = await GetByIdAsync(aiSuggestion.AISuggestionId);
                 return result ?? aiSuggestion;
@@ -64,11 +64,11 @@ namespace Backend.Repositories
         public async Task<bool> ComplaintExistsAsync(int complaintId)
         {
             _logger.LogDebug("Checking if complaint exists for ComplaintId: {ComplaintId}", complaintId);
-            
+
             var exists = await _context.Complaints.AnyAsync(c => c.ComplaintId == complaintId);
-            
+
             _logger.LogDebug("Complaint exists check result for ComplaintId {ComplaintId}: {Exists}", complaintId, exists);
-            
+
             return exists;
         }
 

@@ -21,27 +21,27 @@ export default function TrackingPage() {
     setComplaint(null);
 
     try {
-      console.log("🔍 Searching for ticket:", ticketId);
+      
       // ค้นหาเรื่องร้องเรียนด้วย ticketId - แก้ไข URL ให้ถูกต้อง
       const res = await fetch(`/api/complaints/ticket/${ticketId}/tracking`);
-      console.log("📥 API Response status:", res.status);
-      console.log("📥 API Response ok:", res.ok);
+      
+      
       
       if (!res.ok) {
         if (res.status === 404) {
           throw new Error("ไม่พบเรื่องร้องเรียนด้วยหมายเลขนี้");
         }
-        const errorText = await res.text();
-        console.log("❌ Error response:", errorText);
+        await res.text();
+        
         throw new Error("เกิดข้อผิดพลาดในการค้นหา");
       }
       
       const data = await res.json();
-      console.log("✅ Success response:", data);
+      
       setComplaint(data);
-    } catch (err: any) {
-      console.log("❌ Catch error:", err);
-      setError(err.message);
+    } catch (err) {
+      
+      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
     } finally {
       setLoading(false);
     }

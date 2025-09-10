@@ -19,22 +19,22 @@ namespace Backend.DTOs
         [Required(ErrorMessage = "Username is required")]
         [MaxLength(50)]
         public string Username { get; set; } = string.Empty;
-        
+
         [Required(ErrorMessage = "Password is required")]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
         public string Password { get; set; } = string.Empty;
-        
+
         [MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
-        
+
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
         [MaxLength(100)]
         public string Email { get; set; } = string.Empty;
-        
+
         [Required(ErrorMessage = "Role is required")]
         public string Role { get; set; } = "officer";
-        
+
         public string? Department { get; set; }
     }
 
@@ -42,11 +42,11 @@ namespace Backend.DTOs
     {
         [MaxLength(100)]
         public string? FullName { get; set; }
-        
+
         [EmailAddress]
         [MaxLength(100)]
         public string? Email { get; set; }
-        
+
         public string? Role { get; set; }
         public string? Department { get; set; }
         public bool? IsActive { get; set; }

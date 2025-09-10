@@ -32,8 +32,8 @@ export async function POST(
           const errorText = await response.text();
           errorMessage = errorText || errorMessage;
         }
-      } catch (e) {
-        console.error('Error parsing backend response:', e);
+      } catch {
+        
         errorMessage = `HTTP ${response.status}: ${response.statusText}`;
       }
       return NextResponse.json(
@@ -44,8 +44,8 @@ export async function POST(
 
     const result = await response.json();
     return NextResponse.json(result);
-  } catch (error) {
-    console.error('Error forwarding complaint:', error);
+  } catch {
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

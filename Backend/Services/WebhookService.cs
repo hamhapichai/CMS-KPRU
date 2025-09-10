@@ -74,7 +74,7 @@ namespace Backend.Services
                 var webhookUrl = _webhookOptions.GetComplaintUpdatedUrl();
                 await _webhookQueue.QueueWebhookAsync(webhookUrl, payload);
 
-                _logger.LogInformation("Queued complaint updated webhook for ComplaintId: {ComplaintId}, Status: {Status}", 
+                _logger.LogInformation("Queued complaint updated webhook for ComplaintId: {ComplaintId}, Status: {Status}",
                     complaintId, status);
             }
             catch (Exception ex)

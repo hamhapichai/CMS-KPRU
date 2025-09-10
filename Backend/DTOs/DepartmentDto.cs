@@ -14,7 +14,7 @@ namespace Backend.DTOs
         [Required(ErrorMessage = "Department name is required")]
         [MaxLength(100)]
         public string DepartmentName { get; set; } = string.Empty;
-        
+
         [MaxLength(500)]
         public string? Description { get; set; }
     }
@@ -24,7 +24,7 @@ namespace Backend.DTOs
         [Required(ErrorMessage = "Department name is required")]
         [MaxLength(100)]
         public string DepartmentName { get; set; } = string.Empty;
-        
+
         [MaxLength(500)]
         public string? Description { get; set; }
     }

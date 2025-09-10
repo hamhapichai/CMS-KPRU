@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getUserRoleFromJWT, getUserFromJWT } from '@/utils/jwt';
 
 export default function DeanLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; username: string; fullName: string; role: string; departmentId?: string } | null>(null);
   
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -37,7 +38,7 @@ export default function DeanLayout({ children }: { children: React.ReactNode }) 
       <div id="nav" className={`fixed top-0 left-0 h-full z-40 bg-white shadow-xl transition-all duration-200 flex flex-col justify-between ${sidebarOpen ? 'visible' : ''}`} style={{width: 220, boxShadow: '0 1px 20px rgba(0,0,0,0.25)', transform: sidebarOpen ? 'translateX(0)' : 'translateX(-220px)', opacity: sidebarOpen ? 1 : 0}}>
         <ul className="list-none p-0 mt-24">
           <li className="w-full transition-all">
-            <a href="/dean/complaints" className="block px-6 py-4 w-full h-full hover:bg-green-600 hover:text-white transition-all font-bold">รายการเรื่องร้องเรียน</a>
+            <Link href="/dean/complaints" className="block px-6 py-4 w-full h-full hover:bg-green-600 hover:text-white transition-all font-bold">รายการเรื่องร้องเรียน</Link>
           </li>
         </ul>
         <button

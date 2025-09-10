@@ -62,7 +62,7 @@ namespace Backend.Services
         public string GenerateJwtToken(UserDto user)
         {
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "supersecretkey");
-            
+
             // Create claims with proper string handling
             var claims = new List<Claim>
             {

@@ -9,10 +9,10 @@ export async function GET() {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
-    console.log("Departments API response:", data); // Debug log
+    
     return NextResponse.json(data);
-  } catch (error) {
-    console.error("Error fetching departments:", error);
+  } catch {
+    
     return NextResponse.json([], { status: 500 });
   }
 }

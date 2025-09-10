@@ -179,12 +179,12 @@ namespace Backend.Repositories
                 .Where(u => u.UserId == userId && u.IsActive)
                 .Select(u => new { u.DepartmentId })
                 .FirstOrDefaultAsync();
-            
+
             if (user?.DepartmentId == null)
             {
                 return new List<Complaint>();
             }
-            
+
             // ดึงเรื่องร้องเรียนที่ถูก assign ไปยัง department ของ user นี้
             return await _context.Complaints
                 .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
@@ -194,7 +194,7 @@ namespace Backend.Repositories
                 .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
                     .ThenInclude(ca => ca.AssignedToUser)
                 .Include(c => c.Attachments)
-                .Where(c => c.ComplaintAssignments.Any(ca => 
+                .Where(c => c.ComplaintAssignments.Any(ca =>
                     ca.AssignedToDeptId == user.DepartmentId && ca.IsActive))
                 .OrderByDescending(c => c.SubmissionDate)
                 .ToListAsync();
@@ -241,7 +241,7 @@ namespace Backend.Repositories
                     l.NewStatus
                 })
                 .ToListAsync();
-            
+
             return logs.Cast<object>().ToList();
         }
     }

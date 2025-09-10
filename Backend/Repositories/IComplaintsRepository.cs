@@ -22,7 +22,7 @@ namespace Backend.Repositories
         Task<List<ComplaintLog>> GetLogsByComplaintIdAsync(int complaintId);
         Task<IEnumerable<Complaint>> GetComplaintsByDepartmentAsync(int departmentId);
         Task<IEnumerable<Complaint>> GetComplaintsByUserDepartmentAsync(int userId);
-        
+
         // Debug methods
         Task<List<object>> GetComplaintAssignmentsAsync(int complaintId);
         Task<List<object>> GetComplaintLogsAsync(int complaintId);

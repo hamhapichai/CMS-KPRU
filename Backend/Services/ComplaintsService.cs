@@ -13,7 +13,7 @@ namespace Backend.Services
         private readonly string _uploadPath;
 
         public ComplaintsService(
-            IComplaintsRepository repository, 
+            IComplaintsRepository repository,
             IWebhookService webhookService,
             IConfiguration configuration)
         {
@@ -46,8 +46,8 @@ namespace Backend.Services
                 if (attachments != null && attachments.Count > 0)
                 {
                     var attachmentList = await _repository.AddAttachmentsAsync(
-                        createdComplaint.ComplaintId, 
-                        attachments, 
+                        createdComplaint.ComplaintId,
+                        attachments,
                         _uploadPath
                     );
                     createdComplaint.Attachments = attachmentList;
@@ -90,28 +90,28 @@ namespace Backend.Services
 
         public async Task<ComplaintResponseDto> ForwardComplaintAsync(int complaintId, ForwardComplaintDto dto, int? userId = null)
         {
-            Console.WriteLine($"ForwardComplaintAsync - Start: ComplaintId={complaintId}, DepartmentId={dto.DepartmentId}");
-            
+
+
             var complaint = await _repository.GetByIdAsync(complaintId);
             if (complaint == null)
             {
-                Console.WriteLine($"Complaint not found: {complaintId}");
+
                 throw new NotFoundException("ไม่พบเรื่องร้องเรียนนี้");
             }
 
             var department = await _repository.GetDepartmentByIdAsync(dto.DepartmentId);
             if (department == null)
             {
-                Console.WriteLine($"Department not found: {dto.DepartmentId}");
+
                 throw new NotFoundException("ไม่พบหน่วยงานที่ระบุ");
             }
 
-            Console.WriteLine($"Found complaint: {complaint.ComplaintId}, department: {department.DepartmentName}");
+
 
             // อัพเดตสถานะ
             complaint.CurrentStatus = ComplaintStatus.Forwarded;
             var updatedComplaint = await _repository.UpdateAsync(complaint);
-            Console.WriteLine($"Updated complaint status to: {updatedComplaint.CurrentStatus}");
+
 
             // สร้าง Assignment
             var assignment = new ComplaintAssignment
@@ -124,17 +124,17 @@ namespace Backend.Services
                 Status = ComplaintStatus.Forwarded,
                 IsActive = true
             };
-            
-            Console.WriteLine($"Creating assignment with UserId: {assignment.AssignedByUserId}");
-            
+
+
+
             try
             {
                 await _repository.AddAssignmentAsync(assignment);
-                Console.WriteLine($"Assignment created successfully: {assignment.AssignmentId}");
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating assignment: {ex}");
+
                 throw;
             }
 
@@ -150,17 +150,17 @@ namespace Backend.Services
                 PreviousStatus = complaint.CurrentStatus,
                 NewStatus = ComplaintStatus.Forwarded
             };
-            
-            Console.WriteLine($"Creating log with UserId: {log.UserId}");
-            
+
+
+
             try
             {
                 await _repository.AddLogAsync(log);
-                Console.WriteLine($"Log created successfully: {log.LogId}");
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating log: {ex}");
+
                 throw;
             }
 
@@ -276,7 +276,7 @@ namespace Backend.Services
             assignment.Status = ComplaintStatus.Received;
             assignment.ReceivedDate = DateTime.UtcNow;
             assignment.AssignedToUserId = dto.UserId;
-            
+
             await _repository.UpdateAssignmentAsync(assignment);
 
             // อัพเดตสถานะเรื่องร้องเรียน
@@ -284,7 +284,7 @@ namespace Backend.Services
             await _repository.UpdateAsync(complaint);
 
             // บันทึก log
-            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Receive, 
+            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Receive,
                 dto.Notes, ComplaintStatus.Forwarded, ComplaintStatus.Received, assignment.AssignedToDeptId);
 
             return MapToComplaintResponseDto(complaint);
@@ -309,7 +309,7 @@ namespace Backend.Services
             await _repository.UpdateAsync(complaint);
 
             // บันทึก log
-            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.StartProgress, 
+            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.StartProgress,
                 dto.Notes, ComplaintStatus.Received, ComplaintStatus.InProgress, assignment.AssignedToDeptId);
 
             return MapToComplaintResponseDto(complaint);
@@ -336,7 +336,7 @@ namespace Backend.Services
             await _repository.UpdateAsync(complaint);
 
             // บันทึก log
-            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Complete, 
+            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Complete,
                 dto.ProcessingNotes, ComplaintStatus.InProgress, ComplaintStatus.Completed, assignment.AssignedToDeptId);
 
             return MapToComplaintResponseDto(complaint);
@@ -362,7 +362,7 @@ namespace Backend.Services
             await _repository.UpdateAsync(complaint);
 
             // บันทึก log
-            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Close, 
+            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Close,
                 dto.Notes, ComplaintStatus.Completed, ComplaintStatus.Closed, assignment.AssignedToDeptId);
 
             return MapToComplaintResponseDto(complaint);
@@ -388,7 +388,7 @@ namespace Backend.Services
             await _repository.UpdateAsync(complaint);
 
             // บันทึก log
-            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Reject, 
+            await LogComplaintActionAsync(dto.ComplaintId, dto.UserId, ComplaintAction.Reject,
                 dto.Reason, assignment.Status, ComplaintStatus.Rejected, assignment.AssignedToDeptId);
 
             return MapToComplaintResponseDto(complaint);
@@ -445,7 +445,7 @@ namespace Backend.Services
             // แปลง string ticketId เป็น Guid
             if (!Guid.TryParse(ticketId, out Guid guid))
                 return null;
-            
+
             var complaint = await _repository.GetByTicketIdAsync(guid);
             if (complaint == null)
                 return null;
@@ -453,7 +453,7 @@ namespace Backend.Services
             return await GetComplaintTrackingAsync(complaint.ComplaintId);
         }
 
-        private async Task LogComplaintActionAsync(int complaintId, int userId, string action, 
+        private async Task LogComplaintActionAsync(int complaintId, int userId, string action,
             string? notes, string? previousStatus, string? newStatus, int? departmentId = null)
         {
             var log = new ComplaintLog

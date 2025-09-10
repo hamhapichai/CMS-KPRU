@@ -20,7 +20,7 @@ namespace Backend.Services
         public async Task<UserListResponseDto> GetAllUsersAsync(UserSearchDto searchDto)
         {
             var (users, total) = await _repository.GetAllAsync(searchDto);
-            
+
             return new UserListResponseDto
             {
                 Total = total,

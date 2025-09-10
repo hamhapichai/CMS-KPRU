@@ -8,12 +8,6 @@ import DepartmentDropdown from '@/components/DepartmentDropdown';
 import ComplaintTracking from '@/components/ComplaintTracking';
 import { Complaint, StatusDisplayNames } from '@/types/complaint';
 
-interface Department {
-    departmentId: number;
-    departmentName: string;
-    description?: string;
-}
-
 interface AISuggestion {
     aiSuggestionId: number;
     complaintId: number;
@@ -60,8 +54,8 @@ export default function DeanComplaintDetailPage() {
             if (!res.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
             const data = await res.json();
             setComplaint(data);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
         } finally {
             setLoading(false);
         }
@@ -75,9 +69,9 @@ export default function DeanComplaintDetailPage() {
                 setAiSuggestion(data);
             }
             // ไม่ throw error ถ้าไม่มี AI suggestion เพราะอาจจะยังไม่มี
-        } catch (err) {
+        } catch {
             // Silent fail - AI suggestion is optional
-            console.log("No AI suggestion found or error fetching:", err);
+            
         }
     };
 
@@ -106,7 +100,7 @@ export default function DeanComplaintDetailPage() {
                 throw new Error(errorData.error || "ไม่สามารถส่งต่อเรื่องได้");
             }
 
-            const result = await res.json();
+            await res.json();
             alert(`ส่งต่อเรื่องเรียบร้อยแล้ว`);
             setShowForwardModal(false);
             setForwardData({ departmentId: "", notes: "" });
@@ -114,8 +108,8 @@ export default function DeanComplaintDetailPage() {
             // รีเฟรชข้อมูลเรื่องร้องเรียน
             await fetchComplaint();
             await fetchAISuggestion();
-        } catch (err: any) {
-            alert(`เกิดข้อผิดพลาด: ${err.message}`);
+        } catch (err) {
+            alert(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : 'ไม่ทราบสาเหตุ'}`);
         } finally {
             setIsForwarding(false);
         }

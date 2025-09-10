@@ -6,7 +6,7 @@ namespace Backend.Models
         public string DepartmentName { get; set; } = string.Empty;
         public string? Description { get; set; }
         public bool IsDeleted { get; set; } = false;
-    public ICollection<User>? Users { get; set; }
-    public ICollection<ComplaintAssignment>? ComplaintAssignments { get; set; }
+        public ICollection<User>? Users { get; set; }
+        public ICollection<ComplaintAssignment>? ComplaintAssignments { get; set; }
     }
 }

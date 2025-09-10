@@ -18,7 +18,7 @@ namespace Backend.Models
         public DbSet<ComplaintCategory> ComplaintCategories { get; set; }
         public DbSet<ComplaintCategoryMap> ComplaintCategoryMaps { get; set; }
 
-    public DbSet<TestItem> TestItems { get; set; }
+        public DbSet<TestItem> TestItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

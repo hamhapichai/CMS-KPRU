@@ -21,8 +21,8 @@ export async function GET(
 
     const data = await backendResponse.json();
     return NextResponse.json(data);
-  } catch (error) {
-    console.error('Error fetching complaint logs:', error);
+  } catch {
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

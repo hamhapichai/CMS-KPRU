@@ -25,7 +25,16 @@ export default function UserComplaintDetailPage() {
     const [aiSuggestion, setAiSuggestion] = useState<AISuggestion | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<{ 
+        id?: string; 
+        username?: string; 
+        fullName?: string; 
+        role?: string; 
+        departmentId?: string;
+        userId?: string;
+        sub?: string;
+        nameid?: string;
+    } | null>(null);
     const [showReceiveModal, setShowReceiveModal] = useState(false);
     const [showProgressModal, setShowProgressModal] = useState(false);
     const [showCompleteModal, setShowCompleteModal] = useState(false);
@@ -36,29 +45,29 @@ export default function UserComplaintDetailPage() {
         // Route protection
         if (typeof window !== "undefined") {
             const token = localStorage.getItem("jwt");
-            console.log("🔑 JWT Token:", token ? "Found" : "Not found");
+            
             
             const role = getUserRoleFromJWT(token || "");
             const userData = getUserFromJWT(token || "");
             
-            console.log("👤 Role from JWT:", role);
-            console.log("👤 User data from JWT:", userData);
+            
+            
             
             if (!role || role.toLowerCase() !== "user") {
-                console.log("❌ Invalid role, redirecting to login");
+                
                 window.location.href = "/login";
                 return;
             }
             
             if (!userData || !userData.userId) {
-                console.log("❌ No user data or userId found in JWT");
+                
                 // ลอง parse JWT ใหม่
                 if (token) {
                     try {
-                        const payload = JSON.parse(atob(token.split('.')[1]));
-                        console.log("🔍 Raw JWT payload:", payload);
-                    } catch (e) {
-                        console.log("❌ Failed to parse JWT:", e);
+                        JSON.parse(atob(token.split('.')[1]));
+                        
+                    } catch {
+                        
                     }
                 }
             }
@@ -68,6 +77,7 @@ export default function UserComplaintDetailPage() {
         
         fetchComplaint();
         fetchAISuggestion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [complaintId]);
 
     const fetchComplaint = async () => {
@@ -76,8 +86,8 @@ export default function UserComplaintDetailPage() {
             if (!res.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
             const data = await res.json();
             setComplaint(data);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
         } finally {
             setLoading(false);
         }
@@ -90,34 +100,34 @@ export default function UserComplaintDetailPage() {
                 const data = await res.json();
                 setAiSuggestion(data);
             }
-        } catch (err) {
-            console.log("No AI suggestion found:", err);
+        } catch {
+            
         }
     };
 
     const handleReceiveComplaint = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("🔵 handleReceiveComplaint called");
-        console.log("User:", user);
-        console.log("Complaint ID:", complaintId);
+        
+        
+        
         
         // ตรวจสอบ userId จากหลายแหล่ง
         let userId = user?.userId || user?.sub || user?.id || user?.nameid;
-        console.log("🆔 Extracted userId:", userId);
+        
         
         if (!userId) {
-            console.log("❌ No user ID found");
+            
             
             // ลองดึงจาก JWT โดยตรง
             const token = localStorage.getItem("jwt");
             if (token) {
                 try {
                     const payload = JSON.parse(atob(token.split('.')[1]));
-                    console.log("🔍 JWT payload for userId search:", payload);
+                    
                     userId = payload.userId || payload.sub || payload.id || payload.nameid || payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-                    console.log("🔍 Found userId from JWT:", userId);
-                } catch (e) {
-                    console.log("❌ Failed to parse JWT:", e);
+                    
+                } catch {
+                    
                 }
             }
             
@@ -130,12 +140,12 @@ export default function UserComplaintDetailPage() {
 
         setIsProcessing(true);
         try {
-            console.log("🚀 Sending API request...");
+            
             const requestData = {
                 userId: parseInt(userId),
                 notes: actionData.notes
             };
-            console.log("Request data:", requestData);
+            
             
             const res = await fetch(`/api/complaints/${complaintId}/receive`, {
                 method: "POST",
@@ -143,54 +153,54 @@ export default function UserComplaintDetailPage() {
                 body: JSON.stringify(requestData),
             });
 
-            console.log("📥 API Response status:", res.status);
-            console.log("📥 API Response ok:", res.ok);
+            
+            
 
             if (!res.ok) {
                 const errorData = await res.json();
-                console.log("❌ Error response:", errorData);
+                
                 throw new Error(errorData.message || "ไม่สามารถรับเรื่องได้");
             }
 
-            const responseData = await res.json();
-            console.log("✅ Success response:", responseData);
+            await res.json();
+            
 
             alert("รับเรื่องเรียบร้อยแล้ว");
             setShowReceiveModal(false);
             setActionData({ notes: "" });
             await fetchComplaint();
-        } catch (err: any) {
-            console.log("❌ Catch error:", err);
-            alert(`เกิดข้อผิดพลาด: ${err.message}`);
+        } catch (err) {
+            
+            alert(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : 'ไม่ทราบสาเหตุ'}`);
         } finally {
-            console.log("🏁 Setting isProcessing to false");
+            
             setIsProcessing(false);
         }
     };
 
     const handleStartProgress = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("🟣 handleStartProgress called");
-        console.log("User:", user);
-        console.log("Complaint ID:", complaintId);
+        
+        
+        
         
         // ตรวจสอบ userId จากหลายแหล่ง
         let userId = user?.userId || user?.sub || user?.id || user?.nameid;
-        console.log("🆔 Extracted userId:", userId);
+        
         
         if (!userId) {
-            console.log("❌ No user ID found");
+            
             
             // ลองดึงจาก JWT โดยตรง
             const token = localStorage.getItem("jwt");
             if (token) {
                 try {
                     const payload = JSON.parse(atob(token.split('.')[1]));
-                    console.log("🔍 JWT payload for userId search:", payload);
+                    
                     userId = payload.userId || payload.sub || payload.id || payload.nameid || payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-                    console.log("🔍 Found userId from JWT:", userId);
-                } catch (e) {
-                    console.log("❌ Failed to parse JWT:", e);
+                    
+                } catch {
+                    
                 }
             }
             
@@ -203,12 +213,12 @@ export default function UserComplaintDetailPage() {
 
         setIsProcessing(true);
         try {
-            console.log("🚀 Sending API request to start progress...");
+            
             const requestData = {
                 userId: parseInt(userId),
                 notes: actionData.notes
             };
-            console.log("Request data:", requestData);
+            
             
             const res = await fetch(`/api/complaints/${complaintId}/start-progress`, {
                 method: "POST",
@@ -216,37 +226,37 @@ export default function UserComplaintDetailPage() {
                 body: JSON.stringify(requestData),
             });
 
-            console.log("📥 API Response status:", res.status);
-            console.log("📥 API Response ok:", res.ok);
+            
+            
 
             if (!res.ok) {
                 const errorData = await res.json();
-                console.log("❌ Error response:", errorData);
+                
                 throw new Error(errorData.message || "ไม่สามารถเริ่มดำเนินการได้");
             }
 
-            const responseData = await res.json();
-            console.log("✅ Success response:", responseData);
+            await res.json(); // Success response
+            
 
             alert("เริ่มดำเนินการเรียบร้อยแล้ว");
             setShowProgressModal(false);
             setActionData({ notes: "" });
             await fetchComplaint();
-        } catch (err: any) {
-            console.log("❌ Catch error:", err);
-            alert(`เกิดข้อผิดพลาด: ${err.message}`);
+        } catch (err: unknown) {
+            
+            alert(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : 'Unknown error'}`);
         } finally {
-            console.log("🏁 Setting isProcessing to false");
+            
             setIsProcessing(false);
         }
     };
 
     const handleCompleteComplaint = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("🟢 handleCompleteComplaint called");
-        console.log("User:", user);
-        console.log("Complaint ID:", complaintId);
-        console.log("Processing notes:", actionData.notes);
+        
+        
+        
+        
         
         if (!actionData.notes.trim()) {
             alert("กรุณาระบุรายละเอียดการดำเนินการ");
@@ -255,21 +265,21 @@ export default function UserComplaintDetailPage() {
         
         // ตรวจสอบ userId จากหลายแหล่ง
         let userId = user?.userId || user?.sub || user?.id || user?.nameid;
-        console.log("🆔 Extracted userId:", userId);
+        
         
         if (!userId) {
-            console.log("❌ No user ID found");
+            
             
             // ลองดึงจาก JWT โดยตรง
             const token = localStorage.getItem("jwt");
             if (token) {
                 try {
                     const payload = JSON.parse(atob(token.split('.')[1]));
-                    console.log("🔍 JWT payload for userId search:", payload);
+                    
                     userId = payload.userId || payload.sub || payload.id || payload.nameid || payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-                    console.log("🔍 Found userId from JWT:", userId);
-                } catch (e) {
-                    console.log("❌ Failed to parse JWT:", e);
+                    
+                } catch {
+                    
                 }
             }
             
@@ -282,12 +292,12 @@ export default function UserComplaintDetailPage() {
 
         setIsProcessing(true);
         try {
-            console.log("🚀 Sending API request to complete complaint...");
+            
             const requestData = {
                 userId: parseInt(userId),
                 processingNotes: actionData.notes
             };
-            console.log("Request data:", requestData);
+            
             
             const res = await fetch(`/api/complaints/${complaintId}/complete`, {
                 method: "POST",
@@ -295,27 +305,27 @@ export default function UserComplaintDetailPage() {
                 body: JSON.stringify(requestData),
             });
 
-            console.log("📥 API Response status:", res.status);
-            console.log("📥 API Response ok:", res.ok);
+            
+            
 
             if (!res.ok) {
                 const errorData = await res.json();
-                console.log("❌ Error response:", errorData);
+                
                 throw new Error(errorData.message || "ไม่สามารถดำเนินการเสร็จได้");
             }
 
-            const responseData = await res.json();
-            console.log("✅ Success response:", responseData);
+            await res.json(); // Success response
+            
 
             alert("ดำเนินการเสร็จเรียบร้อยแล้ว");
             setShowCompleteModal(false);
             setActionData({ notes: "" });
             await fetchComplaint();
-        } catch (err: any) {
-            console.log("❌ Catch error:", err);
-            alert(`เกิดข้อผิดพลาด: ${err.message}`);
+        } catch (err: unknown) {
+            
+            alert(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : 'Unknown error'}`);
         } finally {
-            console.log("🏁 Setting isProcessing to false");
+            
             setIsProcessing(false);
         }
     };
@@ -449,8 +459,8 @@ export default function UserComplaintDetailPage() {
                             {complaint.currentStatus === 'Forwarded' && (
                                 <button
                                     onClick={() => {
-                                        console.log("🟠 รับเรื่อง button clicked");
-                                        console.log("Current status:", complaint.currentStatus);
+                                        
+                                        
                                         setShowReceiveModal(true);
                                     }}
                                     className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-bold"
@@ -461,8 +471,8 @@ export default function UserComplaintDetailPage() {
                             {complaint.currentStatus === 'Received' && (
                                 <button
                                     onClick={() => {
-                                        console.log("🟣 เริ่มดำเนินการ button clicked");
-                                        console.log("Current status:", complaint.currentStatus);
+                                        
+                                        
                                         setShowProgressModal(true);
                                     }}
                                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-bold"
@@ -473,8 +483,8 @@ export default function UserComplaintDetailPage() {
                             {complaint.currentStatus === 'InProgress' && (
                                 <button
                                     onClick={() => {
-                                        console.log("🟢 ดำเนินการเสร็จ button clicked");
-                                        console.log("Current status:", complaint.currentStatus);
+                                        
+                                        
                                         setShowCompleteModal(true);
                                     }}
                                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-bold"

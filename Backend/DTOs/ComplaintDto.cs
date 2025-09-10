@@ -5,18 +5,18 @@ namespace Backend.DTOs
     public class ComplaintCreateDto
     {
         public string? ContactName { get; set; }
-        
+
         [EmailAddress]
         public string? ContactEmail { get; set; }
-        
+
         public string? ContactPhone { get; set; }
-        
+
         [Required]
         public string Subject { get; set; } = string.Empty;
-        
+
         [Required]
         public string Message { get; set; } = string.Empty;
-        
+
         public bool IsAnonymous { get; set; }
     }
 
@@ -48,7 +48,7 @@ namespace Backend.DTOs
     {
         [Required]
         public int DepartmentId { get; set; }
-        
+
         public string? Notes { get; set; }
     }
 

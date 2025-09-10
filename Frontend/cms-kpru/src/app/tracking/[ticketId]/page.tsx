@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import TrackingTimeline from '@/components/TrackingTimeline';
 import { ComplaintTrackingResponse } from '@/types/complaint';
@@ -13,40 +13,40 @@ export default function TrackingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (ticketId) {
-      loadComplaint();
-    }
-  }, [ticketId]);
-
-  const loadComplaint = async () => {
+  const loadComplaint = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
       
-      console.log("🔍 Loading complaint for ticket:", ticketId);
+      
       const res = await fetch(`/api/complaints/ticket/${ticketId}/tracking`);
-      console.log("📥 API Response status:", res.status);
+      
       
       if (!res.ok) {
         if (res.status === 404) {
           throw new Error("ไม่พบเรื่องร้องเรียนด้วยหมายเลขนี้");
         }
-        const errorText = await res.text();
-        console.log("❌ Error response:", errorText);
+        await res.text();
+        
         throw new Error("เกิดข้อผิดพลาดในการค้นหา");
       }
       
       const data = await res.json();
-      console.log("✅ Success response:", data);
+      
       setComplaint(data);
-    } catch (err: any) {
-      console.log("❌ Catch error:", err);
-      setError(err.message);
+    } catch (err) {
+      
+      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
     } finally {
       setLoading(false);
     }
-  };
+  }, [ticketId]);
+
+  useEffect(() => {
+    if (ticketId) {
+      loadComplaint();
+    }
+  }, [ticketId, loadComplaint]);
 
   const goBackToSearch = () => {
     router.push('/tracking');

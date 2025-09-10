@@ -1,6 +1,5 @@
 
 "use client";
-import AdminMenu from '../../components/AdminMenu';
 import React, { useEffect } from 'react';
 import { getUserRoleFromJWT } from '@/utils/jwt';
 

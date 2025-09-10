@@ -47,6 +47,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     fetchUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, page, pageSize]);
 
   useEffect(() => {
@@ -138,9 +139,9 @@ export default function UserManagement() {
           { key: 'email', header: 'อีเมล' },
           { key: 'role', header: 'สิทธิ์' },
           { key: 'department', header: 'หน่วยงาน' },
-          { key: 'lastLoginAt', header: 'เข้าสู่ระบบล่าสุด', render: (val) => val ? new Date(val).toLocaleString() : '-' },
+          { key: 'lastLoginAt', header: 'เข้าสู่ระบบล่าสุด', render: (val: unknown) => val ? new Date(val as string).toLocaleString() : '-' },
           {
-            key: 'isActive', header: 'สถานะ', render: (val, row) => (
+            key: 'isActive', header: 'สถานะ', render: (val: unknown, row: User) => (
               <Button
                 style={{padding: '0.5rem 1rem', borderRadius: '0.75rem', fontWeight: 'bold', background: val ? '#22c55e' : '#e11d48', color: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.10)', fontSize: '0.95rem'}}
                 onClick={() => handleToggleActive(row.id)}
@@ -150,7 +151,7 @@ export default function UserManagement() {
             )
           },
           {
-            key: 'reset', header: 'รีเซ็ตรหัสผ่าน', render: (_, row) => (
+            key: 'reset', header: 'รีเซ็ตรหัสผ่าน', render: (_: unknown, row: User) => (
               <Button
                 style={{padding: '0.5rem 1rem', borderRadius: '0.75rem', fontWeight: 'bold', background: '#2563eb', color: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.10)', fontSize: '0.95rem'}}
                 onClick={() => handleResetPassword(row.id)}
@@ -160,7 +161,7 @@ export default function UserManagement() {
             )
           },
           {
-            key: 'edit', header: 'แก้ไข', render: (_, row) => (
+            key: 'edit', header: 'แก้ไข', render: (_: unknown, row: User) => (
               <Button
                 style={{padding: '0.5rem 1rem', borderRadius: '0.75rem', fontWeight: 'bold', background: '#f59e42', color: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.10)', fontSize: '0.95rem'}}
                 onClick={() => { setEditUser(row); setEditModalOpen(true); }}

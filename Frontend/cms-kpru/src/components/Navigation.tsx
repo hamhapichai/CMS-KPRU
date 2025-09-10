@@ -7,7 +7,14 @@ export default function Navigation() {
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   const [departmentName, setDepartmentName] = useState<string | null>(null);
-  const [userInfo, setUserInfo] = useState<any>(null);
+  const [userInfo, setUserInfo] = useState<{ 
+    id?: string; 
+    username?: string; 
+    fullName?: string; 
+    role?: string; 
+    departmentId?: string;
+    departmentName?: string;
+  } | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
