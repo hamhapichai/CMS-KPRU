@@ -35,6 +35,8 @@ export default function LoginPage() {
         window.location.href = "/dean/complaints";
       } else if (role === "admin" || role === "officer") {
         window.location.href = "/admin";
+      } else if (role === "user") {
+        window.location.href = "/user/complaints";
       } else {
         window.location.href = "/";
       }

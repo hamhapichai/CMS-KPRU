@@ -3,28 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getUserRoleFromJWT } from '@/utils/jwt';
 import Link from "next/link";
-
-interface Attachment {
-  attachmentId: number;
-  fileName: string;
-  fileUrl: string;
-  fileType: string;
-  uploadedAt: string;
-}
-
-interface Complaint {
-  complaintId: number;
-  contactName?: string;
-  contactEmail: string;
-  contactPhone?: string;
-  subject: string;
-  message: string;
-  submissionDate: string;
-  currentStatus: string;
-  isAnonymous: boolean;
-  ticketId: string;
-  attachments: Attachment[];
-}
+import ComplaintTracking from '@/components/ComplaintTracking';
+import { Complaint, StatusDisplayNames } from '@/types/complaint';
 
 export default function ComplaintDetailPage() {
   const { complaintId } = useParams();
@@ -91,15 +71,27 @@ export default function ComplaintDetailPage() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white rounded-lg shadow-md p-8 mb-6">
         <h1 className="text-2xl font-bold mb-4">รายละเอียดเรื่องร้องเรียน</h1>
         <div className="mb-4">
           <span className={`px-3 py-1 rounded-full text-sm ${
             complaint.currentStatus === 'Submitted'
               ? 'bg-yellow-100 text-yellow-800'
-              : 'bg-green-100 text-green-800'
+              : complaint.currentStatus === 'Forwarded'
+              ? 'bg-blue-100 text-blue-800'
+              : complaint.currentStatus === 'Received'
+              ? 'bg-purple-100 text-purple-800'
+              : complaint.currentStatus === 'InProgress'
+              ? 'bg-orange-100 text-orange-800'
+              : complaint.currentStatus === 'Completed'
+              ? 'bg-green-100 text-green-800'
+              : complaint.currentStatus === 'Closed'
+              ? 'bg-gray-100 text-gray-800'
+              : complaint.currentStatus === 'Rejected'
+              ? 'bg-red-100 text-red-800'
+              : 'bg-gray-100 text-gray-800'
           }`}>
-            {complaint.currentStatus}
+            {StatusDisplayNames[complaint.currentStatus as keyof typeof StatusDisplayNames] || complaint.currentStatus}
           </span>
         </div>
         <div className="mb-4">
@@ -144,9 +136,14 @@ export default function ComplaintDetailPage() {
             </ul>
           </div>
         )}
-        <div className="mt-8">
-          <Link href="/admin/complaints" className="text-blue-600 hover:underline font-bold">← กลับไปหน้ารายการ</Link>
         </div>
+
+        {/* Tracking Timeline */}
+        <ComplaintTracking complaintId={complaint.complaintId} />
+
+        {/* Back button */}
+        <div className="mt-6">
+          <Link href="/admin/complaints" className="text-blue-600 hover:underline font-bold">← กลับไปหน้ารายการ</Link>
         </div>
       </div>
     </div>

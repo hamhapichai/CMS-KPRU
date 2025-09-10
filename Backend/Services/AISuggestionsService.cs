@@ -58,6 +58,7 @@ namespace Backend.Services
                     ComplaintId = dto.ComplaintId,
                     SuggestedDeptId = dto.SuggestedDeptId,
                     SuggestedCategory = dto.SuggestedCategory,
+                    SummarizedByAI = dto.SummarizedByAI,
                     ConfidenceScore = dto.ConfidenceScore,
                     SuggestedAt = DateTime.UtcNow, // 3. Set SuggestedAt
                     N8nWorkflowId = dto.N8nWorkflowId
@@ -128,6 +129,7 @@ namespace Backend.Services
                 ComplaintId = dto.ComplaintId,
                 SuggestedDeptId = dto.SuggestedDeptId,
                 SuggestedCategory = dto.SuggestedCategory,
+                SummarizedByAI = dto.SummarizedByAI,
                 ConfidenceScore = dto.ConfidenceScore,
                 SuggestedAt = DateTime.UtcNow,
                 N8nWorkflowId = dto.N8nWorkflowId
@@ -146,6 +148,7 @@ namespace Backend.Services
                 SuggestedDeptId = suggestion.SuggestedDeptId,
                 DepartmentName = suggestion.SuggestedDept?.DepartmentName,
                 SuggestedCategory = suggestion.SuggestedCategory,
+                SummarizedByAI = suggestion.SummarizedByAI,
                 ConfidenceScore = suggestion.ConfidenceScore,
                 SuggestedAt = suggestion.SuggestedAt,
                 N8nWorkflowId = suggestion.N8nWorkflowId

@@ -27,6 +27,13 @@ namespace Backend.Repositories
                 .FirstOrDefaultAsync(c => c.ComplaintId == id);
         }
 
+        public async Task<Complaint?> GetByTicketIdAsync(Guid ticketId)
+        {
+            return await _context.Complaints
+                .Include(c => c.Attachments)
+                .FirstOrDefaultAsync(c => c.TicketId == ticketId);
+        }
+
         public async Task<IEnumerable<Complaint>> GetAllAsync()
         {
             return await _context.Complaints
@@ -113,6 +120,129 @@ namespace Backend.Repositories
         public async Task<Department?> GetDepartmentByIdAsync(int departmentId)
         {
             return await _context.Departments.FindAsync(departmentId);
+        }
+
+        public async Task<User?> GetUserByIdAsync(int userId)
+        {
+            return await _context.Users
+                .Include(u => u.Department)
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+        }
+
+        public async Task<ComplaintAssignment?> GetActiveAssignmentByComplaintIdAsync(int complaintId)
+        {
+            return await _context.ComplaintAssignments
+                .Include(ca => ca.AssignedToDept)
+                .Include(ca => ca.AssignedByUser)
+                .Include(ca => ca.AssignedToUser)
+                .Where(ca => ca.ComplaintId == complaintId && ca.IsActive)
+                .OrderByDescending(ca => ca.AssignedDate)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<ComplaintAssignment> UpdateAssignmentAsync(ComplaintAssignment assignment)
+        {
+            _context.ComplaintAssignments.Update(assignment);
+            await _context.SaveChangesAsync();
+            return assignment;
+        }
+
+        public async Task<List<ComplaintLog>> GetLogsByComplaintIdAsync(int complaintId)
+        {
+            return await _context.ComplaintLogs
+                .Include(l => l.User)
+                .Include(l => l.Department)
+                .Where(l => l.ComplaintId == complaintId)
+                .OrderBy(l => l.Timestamp)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Complaint>> GetComplaintsByDepartmentAsync(int departmentId)
+        {
+            return await _context.Complaints
+                .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
+                    .ThenInclude(ca => ca.AssignedToDept)
+                .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
+                    .ThenInclude(ca => ca.AssignedByUser)
+                .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
+                    .ThenInclude(ca => ca.AssignedToUser)
+                .Where(c => c.ComplaintAssignments.Any(ca => ca.AssignedToDeptId == departmentId && ca.IsActive))
+                .OrderByDescending(c => c.SubmissionDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Complaint>> GetComplaintsByUserDepartmentAsync(int userId)
+        {
+            // ก่อนอื่นหา Department ของ User
+            var user = await _context.Users
+                .Where(u => u.UserId == userId && u.IsActive)
+                .Select(u => new { u.DepartmentId })
+                .FirstOrDefaultAsync();
+            
+            if (user?.DepartmentId == null)
+            {
+                return new List<Complaint>();
+            }
+            
+            // ดึงเรื่องร้องเรียนที่ถูก assign ไปยัง department ของ user นี้
+            return await _context.Complaints
+                .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
+                    .ThenInclude(ca => ca.AssignedToDept)
+                .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
+                    .ThenInclude(ca => ca.AssignedByUser)
+                .Include(c => c.ComplaintAssignments.Where(ca => ca.IsActive))
+                    .ThenInclude(ca => ca.AssignedToUser)
+                .Include(c => c.Attachments)
+                .Where(c => c.ComplaintAssignments.Any(ca => 
+                    ca.AssignedToDeptId == user.DepartmentId && ca.IsActive))
+                .OrderByDescending(c => c.SubmissionDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<object>> GetComplaintAssignmentsAsync(int complaintId)
+        {
+            return await _context.ComplaintAssignments
+                .Where(a => a.ComplaintId == complaintId)
+                .Include(a => a.AssignedToDept)
+                .Select(a => new
+                {
+                    a.AssignmentId,
+                    a.ComplaintId,
+                    a.AssignedToDeptId,
+                    DepartmentName = a.AssignedToDept != null ? a.AssignedToDept.DepartmentName : null,
+                    a.AssignedByUserId,
+                    a.ForwardingNotes,
+                    a.AssignedDate,
+                    a.Status,
+                    a.IsActive
+                })
+                .Cast<object>()
+                .ToListAsync();
+        }
+
+        public async Task<List<object>> GetComplaintLogsAsync(int complaintId)
+        {
+            var logs = await _context.ComplaintLogs
+                .Where(l => l.ComplaintId == complaintId)
+                .Include(l => l.Department)
+                .OrderBy(l => l.Timestamp)
+                .Select(l => new
+                {
+                    l.LogId,
+                    l.ComplaintId,
+                    l.Timestamp,
+                    l.Action,
+                    l.Notes,
+                    l.UserId,
+                    l.DepartmentId,
+                    DepartmentName = l.Department != null ? l.Department.DepartmentName : null,
+                    l.PreviousStatus,
+                    l.NewStatus
+                })
+                .ToListAsync();
+            
+            return logs.Cast<object>().ToList();
         }
     }
 }

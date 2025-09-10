@@ -12,6 +12,9 @@ namespace Backend.DTOs
         [MaxLength(200)]
         public string? SuggestedCategory { get; set; }
         
+        [MaxLength(1000)]
+        public string? SummarizedByAI { get; set; }
+        
         [Range(0.0, 1.0, ErrorMessage = "ConfidenceScore must be between 0 and 1")]
         public float? ConfidenceScore { get; set; }
         
@@ -29,6 +32,9 @@ namespace Backend.DTOs
         [MaxLength(200)]
         public string? SuggestedCategory { get; set; }
         
+        [MaxLength(1000)]
+        public string? SummarizedByAI { get; set; }
+        
         [Range(0.0, 1.0, ErrorMessage = "ConfidenceScore must be between 0 and 1")]
         public float? ConfidenceScore { get; set; }
         
@@ -43,6 +49,7 @@ namespace Backend.DTOs
         public int? SuggestedDeptId { get; set; }
         public string? DepartmentName { get; set; }
         public string? SuggestedCategory { get; set; }
+        public string? SummarizedByAI { get; set; }
         public float? ConfidenceScore { get; set; }
         public DateTime SuggestedAt { get; set; }
         public string? N8nWorkflowId { get; set; }

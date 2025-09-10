@@ -34,13 +34,13 @@ namespace Backend.Services
             // Update last login
             await _repository.UpdateLastLoginAsync(user.UserId);
 
-            // Map to UserDto
+            // Map to UserDto with proper encoding
             var userDto = new UserDto
             {
                 Id = user.UserId,
-                Username = user.Username,
-                FullName = user.FullName,
-                Email = user.Email,
+                Username = user.Username ?? "",
+                FullName = user.FullName ?? "",
+                Email = user.Email ?? "",
                 Role = user.Role?.RoleName ?? "officer",
                 Department = user.Department?.DepartmentName ?? "",
                 LastLoginAt = user.LastLoginAt,
@@ -62,25 +62,30 @@ namespace Backend.Services
         public string GenerateJwtToken(UserDto user)
         {
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "supersecretkey");
-            var claims = new[]
+            
+            // Create claims with proper string handling
+            var claims = new List<Claim>
             {
-                new Claim("sub", user.Id.ToString()),
-                new Claim("unique_name", user.Username),
-                new Claim("role", user.Role),
-                new Claim("email", user.Email),
-                new Claim("fullName", user.FullName)
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Username ?? ""),
+                new Claim(ClaimTypes.Role, user.Role ?? ""),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                new Claim("fullName", user.FullName ?? ""),
+                new Claim("departmentName", user.Department ?? "")
             };
 
-            var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"] ?? "localhost",
-                audience: _configuration["Jwt:Audience"] ?? "localhost", 
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(8),
-                signingCredentials: creds
-            );
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(8),
+                Issuer = _configuration["Jwt:Issuer"] ?? "localhost",
+                Audience = _configuration["Jwt:Audience"] ?? "localhost",
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

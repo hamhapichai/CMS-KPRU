@@ -20,16 +20,16 @@ namespace Backend.Services
     public class WebhookQueueService : BackgroundService, IWebhookQueueService
     {
         private readonly ConcurrentQueue<WebhookJob> _queue = new();
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<WebhookQueueService> _logger;
         private readonly IConfiguration _configuration;
 
         public WebhookQueueService(
-            HttpClient httpClient,
+            IHttpClientFactory httpClientFactory,
             ILogger<WebhookQueueService> logger,
             IConfiguration configuration)
         {
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
             _logger = logger;
             _configuration = configuration;
         }
@@ -86,8 +86,9 @@ namespace Backend.Services
 
                 // Set timeout for webhook requests
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                using var httpClient = _httpClientFactory.CreateClient();
                 
-                var response = await _httpClient.PostAsync(job.Url, content, cts.Token);
+                var response = await httpClient.PostAsync(job.Url, content, cts.Token);
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -6,10 +6,11 @@ namespace Backend.Models
     {
         public int AISuggestionId { get; set; }
         public int ComplaintId { get; set; }
-    public Complaint? Complaint { get; set; }
+        public Complaint? Complaint { get; set; }
         public int? SuggestedDeptId { get; set; }
         public Department? SuggestedDept { get; set; }
         public string? SuggestedCategory { get; set; }
+        public string? SummarizedByAI { get; set; } // สรุปเรื่องจาก AI แบบสั้นๆและเข้าใจง่าย
         public float? ConfidenceScore { get; set; }
         public DateTime SuggestedAt { get; set; } = DateTime.UtcNow;
         public string? N8nWorkflowId { get; set; }

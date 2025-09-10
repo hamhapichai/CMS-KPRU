@@ -1,16 +1,22 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { getUserRoleFromJWT } from "@/utils/jwt";
+import { getUserRoleFromJWT, getDepartmentNameFromJWT, getUserFromJWT } from "@/utils/jwt";
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<string | null>(null);
+  const [departmentName, setDepartmentName] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<any>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("jwt");
-      setRole(getUserRoleFromJWT(token || ""));
+      if (token) {
+        setRole(getUserRoleFromJWT(token));
+        setDepartmentName(getDepartmentNameFromJWT(token));
+        setUserInfo(getUserFromJWT(token));
+      }
     }
   }, []);
 
@@ -46,30 +52,68 @@ export default function Navigation() {
             </svg>
           </button>
         </div>
-        <div className="hidden md:flex space-x-4">
-          <Link href="/" className="hover:text-blue-200">
-            ส่งเรื่องร้องเรียน
-          </Link>
-          {showDeanMenu && (
-            <Link href="/dean/complaints" className="hover:text-blue-200">
-              รายการเรื่องร้องเรียน (คณบดี)
+        <div className="hidden md:flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
+            <Link href="/" className="hover:text-blue-200">
+              ส่งเรื่องร้องเรียน
             </Link>
-          )}
-          {showAdminMenu && (
-            <>
-              <Link href="/admin/complaints" className="hover:text-blue-200">
-                จัดการเรื่องร้องเรียน
+            {showDeanMenu && (
+              <Link href="/dean/complaints" className="hover:text-blue-200">
+                รายการเรื่องร้องเรียน (คณบดี)
               </Link>
-              <Link href="/admin" className="hover:text-blue-200">
-                จัดการผู้ใช้
-              </Link>
-            </>
+            )}
+            {showAdminMenu && (
+              <>
+                <Link href="/admin/complaints" className="hover:text-blue-200">
+                  จัดการเรื่องร้องเรียน
+                </Link>
+                <Link href="/admin" className="hover:text-blue-200">
+                  จัดการผู้ใช้
+                </Link>
+              </>
+            )}
+          </div>
+          
+          {/* User Info */}
+          {userInfo && (
+            <div className="flex items-center space-x-3 bg-blue-500 bg-opacity-20 rounded-lg px-3 py-2">
+              <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <span className="text-sm font-semibold">
+                  {userInfo.fullName ? userInfo.fullName.charAt(0).toUpperCase() : 'U'}
+                </span>
+              </div>
+              <div className="hidden lg:block">
+                <div className="text-sm font-medium">{userInfo.fullName}</div>
+                <div className="text-xs text-blue-200">
+                  {role} {departmentName && `• ${departmentName}`}
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden mt-2 bg-blue-700 rounded-lg shadow-lg">
+          {/* User Info - Mobile */}
+          {userInfo && (
+            <div className="px-4 py-3 border-b border-blue-600">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-semibold">
+                    {userInfo.fullName ? userInfo.fullName.charAt(0).toUpperCase() : 'U'}
+                  </span>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-white">{userInfo.fullName}</div>
+                  <div className="text-xs text-blue-200">
+                    {role} {departmentName && `• ${departmentName}`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <Link
             href="/"
             className="block px-4 py-2 hover:bg-blue-500"
