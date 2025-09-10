@@ -20,16 +20,16 @@ namespace Backend.Services
     public class WebhookQueueService : BackgroundService, IWebhookQueueService
     {
         private readonly ConcurrentQueue<WebhookJob> _queue = new();
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<WebhookQueueService> _logger;
         private readonly IConfiguration _configuration;
 
         public WebhookQueueService(
-            HttpClient httpClient,
+            IHttpClientFactory httpClientFactory,
             ILogger<WebhookQueueService> logger,
             IConfiguration configuration)
         {
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
             _logger = logger;
             _configuration = configuration;
         }
@@ -45,7 +45,7 @@ namespace Backend.Services
 
             _queue.Enqueue(job);
             _logger.LogInformation("Webhook job queued: {Url}", url);
-            
+
             return Task.CompletedTask;
         }
 
@@ -86,19 +86,20 @@ namespace Backend.Services
 
                 // Set timeout for webhook requests
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-                
-                var response = await _httpClient.PostAsync(job.Url, content, cts.Token);
+                using var httpClient = _httpClientFactory.CreateClient();
+
+                var response = await httpClient.PostAsync(job.Url, content, cts.Token);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation("Webhook sent successfully: {Url}, Status: {Status}", 
+                    _logger.LogInformation("Webhook sent successfully: {Url}, Status: {Status}",
                         job.Url, response.StatusCode);
                 }
                 else
                 {
-                    _logger.LogWarning("Webhook failed: {Url}, Status: {Status}, Response: {Response}", 
+                    _logger.LogWarning("Webhook failed: {Url}, Status: {Status}, Response: {Response}",
                         job.Url, response.StatusCode, await response.Content.ReadAsStringAsync());
-                    
+
                     // Retry if not successful
                     await RetryWebhookJobAsync(job);
                 }
@@ -118,19 +119,19 @@ namespace Backend.Services
         private async Task RetryWebhookJobAsync(WebhookJob job)
         {
             job.RetryCount++;
-            
+
             if (job.RetryCount <= job.MaxRetries)
             {
-                _logger.LogInformation("Retrying webhook job: {Url}, Attempt: {Retry}/{Max}", 
+                _logger.LogInformation("Retrying webhook job: {Url}, Attempt: {Retry}/{Max}",
                     job.Url, job.RetryCount, job.MaxRetries);
-                
+
                 // Wait before retry (exponential backoff)
                 await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, job.RetryCount)));
                 _queue.Enqueue(job);
             }
             else
             {
-                _logger.LogError("Webhook job failed after {MaxRetries} retries: {Url}", 
+                _logger.LogError("Webhook job failed after {MaxRetries} retries: {Url}",
                     job.MaxRetries, job.Url);
             }
         }

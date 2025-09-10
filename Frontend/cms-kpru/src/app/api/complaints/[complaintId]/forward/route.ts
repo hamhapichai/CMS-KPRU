@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { complaintId: string } }
+  { params }: { params: Promise<{ complaintId: string }> }
 ) {
   try {
     const { departmentId, notes } = await request.json();
-    const complaintId = params.complaintId;
+    const resolvedParams = await params;
+    const complaintId = resolvedParams.complaintId;
     
     const response = await fetch(`http://localhost:5000/api/complaints/${complaintId}/forward`, {
       method: 'POST',
@@ -21,17 +22,30 @@ export async function POST(
     });
 
     if (!response.ok) {
-      const errorData = await response.text();
+      let errorMessage = 'Failed to forward complaint';
+      try {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error || errorMessage;
+        } else {
+          const errorText = await response.text();
+          errorMessage = errorText || errorMessage;
+        }
+      } catch {
+        
+        errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+      }
       return NextResponse.json(
-        { error: errorData || 'Failed to forward complaint' },
+        { error: errorMessage },
         { status: response.status }
       );
     }
 
     const result = await response.json();
     return NextResponse.json(result);
-  } catch (error) {
-    console.error('Error forwarding complaint:', error);
+  } catch {
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

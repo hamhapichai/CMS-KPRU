@@ -48,6 +48,9 @@ namespace Backend.Migrations
                     b.Property<int?>("SuggestedDeptId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("SummarizedByAI")
+                        .HasColumnType("text");
+
                     b.HasKey("AISuggestionId");
 
                     b.HasIndex("ComplaintId");
@@ -148,27 +151,45 @@ namespace Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AssignmentId"));
 
-                    b.Property<int?>("AISuggestionDeptId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("AssignedByUserId")
+                    b.Property<int>("AssignedByUserId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("AssignedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("AssignedToDeptId")
+                    b.Property<int>("AssignedToDeptId")
                         .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedToUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ClosedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ComplaintId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("ConfirmedByDean")
+                    b.Property<DateTime?>("CompletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ForwardingNotes")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ProcessingNotes")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ReceivedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("AssignmentId");
 
@@ -176,7 +197,11 @@ namespace Backend.Migrations
 
                     b.HasIndex("AssignedToDeptId");
 
+                    b.HasIndex("AssignedToUserId");
+
                     b.HasIndex("ComplaintId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("ComplaintAssignments");
                 });
@@ -235,14 +260,26 @@ namespace Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LogId"));
 
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("ComplaintId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Details")
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Metadata")
                         .HasColumnType("text");
 
-                    b.Property<string>("LogType")
-                        .IsRequired()
+                    b.Property<string>("NewStatus")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PreviousStatus")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Timestamp")
@@ -254,6 +291,8 @@ namespace Backend.Migrations
                     b.HasKey("LogId");
 
                     b.HasIndex("ComplaintId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("UserId");
 
@@ -405,12 +444,21 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.ComplaintAssignment", b =>
                 {
                     b.HasOne("Backend.Models.User", "AssignedByUser")
-                        .WithMany("ComplaintAssignments")
-                        .HasForeignKey("AssignedByUserId");
+                        .WithMany()
+                        .HasForeignKey("AssignedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Backend.Models.Department", "AssignedToDept")
                         .WithMany("ComplaintAssignments")
-                        .HasForeignKey("AssignedToDeptId");
+                        .HasForeignKey("AssignedToDeptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.User", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Backend.Models.Complaint", "Complaint")
                         .WithMany("ComplaintAssignments")
@@ -418,9 +466,15 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Backend.Models.User", null)
+                        .WithMany("ComplaintAssignments")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("AssignedByUser");
 
                     b.Navigation("AssignedToDept");
+
+                    b.Navigation("AssignedToUser");
 
                     b.Navigation("Complaint");
                 });
@@ -452,11 +506,17 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Backend.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("ComplaintLogs")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Complaint");
+
+                    b.Navigation("Department");
 
                     b.Navigation("User");
                 });

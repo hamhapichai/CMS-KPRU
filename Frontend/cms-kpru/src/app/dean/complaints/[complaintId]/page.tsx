@@ -5,38 +5,25 @@ import { getUserRoleFromJWT } from '@/utils/jwt';
 import Link from "next/link";
 import Modal from '@/components/Modal';
 import DepartmentDropdown from '@/components/DepartmentDropdown';
+import ComplaintTracking from '@/components/ComplaintTracking';
+import { Complaint, StatusDisplayNames } from '@/types/complaint';
 
-interface Attachment {
-    attachmentId: number;
-    fileName: string;
-    fileUrl: string;
-    fileType: string;
-    uploadedAt: string;
-}
-
-interface Complaint {
+interface AISuggestion {
+    aiSuggestionId: number;
     complaintId: number;
-    contactName?: string;
-    contactEmail: string;
-    contactPhone?: string;
-    subject: string;
-    message: string;
-    submissionDate: string;
-    currentStatus: string;
-    isAnonymous: boolean;
-    ticketId: string;
-    attachments: Attachment[];
-}
-
-interface Department {
-    departmentId: number;
-    departmentName: string;
-    description?: string;
+    suggestedDeptId?: number;
+    departmentName?: string;
+    suggestedCategory?: string;
+    summarizedByAI?: string;
+    confidenceScore?: number;
+    suggestedAt: string;
+    n8nWorkflowId?: string;
 }
 
 export default function DeanComplaintDetailPage() {
     const { complaintId } = useParams();
     const [complaint, setComplaint] = useState<Complaint | null>(null);
+    const [aiSuggestion, setAiSuggestion] = useState<AISuggestion | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [showForwardModal, setShowForwardModal] = useState(false);
@@ -57,6 +44,7 @@ export default function DeanComplaintDetailPage() {
             }
         }
         fetchComplaint();
+        fetchAISuggestion();
         // eslint-disable-next-line
     }, [complaintId]);
 
@@ -66,10 +54,24 @@ export default function DeanComplaintDetailPage() {
             if (!res.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
             const data = await res.json();
             setComplaint(data);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchAISuggestion = async () => {
+        try {
+            const res = await fetch(`/api/AISuggestions/complaint/${complaintId}`);
+            if (res.ok) {
+                const data = await res.json();
+                setAiSuggestion(data);
+            }
+            // ไม่ throw error ถ้าไม่มี AI suggestion เพราะอาจจะยังไม่มี
+        } catch {
+            // Silent fail - AI suggestion is optional
+            
         }
     };
 
@@ -98,15 +100,16 @@ export default function DeanComplaintDetailPage() {
                 throw new Error(errorData.error || "ไม่สามารถส่งต่อเรื่องได้");
             }
 
-            const result = await res.json();
+            await res.json();
             alert(`ส่งต่อเรื่องเรียบร้อยแล้ว`);
             setShowForwardModal(false);
             setForwardData({ departmentId: "", notes: "" });
 
             // รีเฟรชข้อมูลเรื่องร้องเรียน
             await fetchComplaint();
-        } catch (err: any) {
-            alert(`เกิดข้อผิดพลาด: ${err.message}`);
+            await fetchAISuggestion();
+        } catch (err) {
+            alert(`เกิดข้อผิดพลาด: ${err instanceof Error ? err.message : 'ไม่ทราบสาเหตุ'}`);
         } finally {
             setIsForwarding(false);
         }
@@ -144,14 +147,27 @@ export default function DeanComplaintDetailPage() {
                 </div>
 
                 {/* Main Content */}
-                <div className="bg-white rounded-lg shadow-md p-8">
+                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
                     <h1 className="text-2xl font-bold mb-4 text-green-700">รายละเอียดเรื่องร้องเรียน - คณบดี</h1>
                     <div className="mb-4">
-                        <span className={`px-3 py-1 rounded-full text-sm ${complaint.currentStatus === 'Submitted'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-green-100 text-green-800'
-                            }`}>
-                            {complaint.currentStatus}
+                        <span className={`px-3 py-1 rounded-full text-sm ${
+                            complaint.currentStatus === 'Submitted'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : complaint.currentStatus === 'Forwarded'
+                              ? 'bg-blue-100 text-blue-800'
+                              : complaint.currentStatus === 'Received'
+                              ? 'bg-purple-100 text-purple-800'
+                              : complaint.currentStatus === 'InProgress'
+                              ? 'bg-orange-100 text-orange-800'
+                              : complaint.currentStatus === 'Completed'
+                              ? 'bg-green-100 text-green-800'
+                              : complaint.currentStatus === 'Closed'
+                              ? 'bg-gray-100 text-gray-800'
+                              : complaint.currentStatus === 'Rejected'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-gray-100 text-gray-800'
+                        }`}>
+                            {StatusDisplayNames[complaint.currentStatus as keyof typeof StatusDisplayNames] || complaint.currentStatus}
                         </span>
                     </div>
                     <div className="mb-4">
@@ -197,26 +213,81 @@ export default function DeanComplaintDetailPage() {
                         </div>
                     )}
 
-                    {/* AI Suggestion Form */}
-                    <div className="mb-4 border-t pt-4">
-                        <h3 className="font-bold mb-2">ข้อเสนอแนะจาก AI:</h3>
-                        <div className="mb-4">
-                            <strong>สรุปเรื่อง:</strong>
-                            <div className="mt-2 text-gray-700 whitespace-pre-wrap">เป็นเรื่องร้องเรียนเกี่ยวกับ...</div>
+                    {/* AI Suggestion Section */}
+                    {aiSuggestion ? (
+                        <div className="mb-4 border-t pt-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <h3 className="font-bold text-blue-700">ข้อเสนอแนะจาก AI:</h3>
+                                <button 
+                                    onClick={fetchAISuggestion}
+                                    className="text-xs text-blue-600 hover:text-blue-800 underline"
+                                >
+                                    รีเฟรช
+                                </button>
+                            </div>
+                            
+                            {aiSuggestion.summarizedByAI && (
+                                <div className="mb-4 bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
+                                    <strong className="text-blue-800">สรุปเรื่อง:</strong>
+                                    <div className="mt-2 text-gray-700 whitespace-pre-wrap">
+                                        {aiSuggestion.summarizedByAI}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {aiSuggestion.departmentName && (
+                                <div className="mb-4 bg-green-50 p-3 rounded-lg border-l-4 border-green-400">
+                                    <strong className="text-green-800">หน่วยงานที่แนะนำ:</strong>
+                                    <div className="mt-2 text-gray-700 flex items-center justify-between">
+                                        <span>{aiSuggestion.departmentName}</span>
+                                        {aiSuggestion.confidenceScore && (
+                                            <span className="text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                                                ความมั่นใจ: {Math.round((aiSuggestion.confidenceScore || 0) * 100)}%
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {aiSuggestion.suggestedCategory && (
+                                <div className="mb-4 bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400">
+                                    <strong className="text-yellow-800">หมวดหมู่:</strong>
+                                    <div className="mt-2 text-gray-700">{aiSuggestion.suggestedCategory}</div>
+                                </div>
+                            )}
+                            
+                            <div className="text-xs text-gray-500 mt-3">
+                                วิเคราะห์โดย AI เมื่อ: {new Date(aiSuggestion.suggestedAt).toLocaleString('th-TH')}
+                            </div>
                         </div>
-                        <div className="mb-4">
-                            <strong>หน่วยงานที่คาดว่าเกี่ยวข้อง:</strong>
-                            <div className="mt-2 text-gray-700 whitespace-pre-wrap">ฝ่าย.....</div>
+                    ) : (
+                        <div className="mb-4 border-t pt-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <h3 className="font-bold text-gray-500">ข้อเสนอแนะจาก AI:</h3>
+                                <button 
+                                    onClick={fetchAISuggestion}
+                                    className="text-xs text-gray-600 hover:text-gray-800 underline"
+                                >
+                                    รีเฟรช
+                                </button>
+                            </div>
+                            <div className="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-300">
+                                <div className="text-gray-500 italic">
+                                    {loading ? "กำลังรอการวิเคราะห์จาก AI..." : "ยังไม่มีข้อเสนอแนะจาก AI"}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Action buttons for dean */}
                     <div className="mb-4 border-t pt-4">
                         <h3 className="font-bold mb-2">การดำเนินการ:</h3>
                         <div className="space-x-2">
-                            <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-bold">
-                                อนุมัติเรื่อง
-                            </button>
+                            {complaint.currentStatus === 'Completed' && (
+                                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-bold">
+                                    อนุมัติปิดเรื่อง
+                                </button>
+                            )}
                             {complaint.currentStatus === 'Submitted' && (
                                 <button
                                     onClick={() => setShowForwardModal(true)}
@@ -225,9 +296,11 @@ export default function DeanComplaintDetailPage() {
                                     ส่งต่อหน่วยงานที่เกี่ยวข้อง
                                 </button>
                             )}
-                            <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-bold">
-                                ปฏิเสธ
-                            </button>
+                            {complaint.currentStatus === 'Submitted' && (
+                                <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-bold">
+                                    ปฏิเสธ
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -298,10 +371,14 @@ export default function DeanComplaintDetailPage() {
                             </form>
                         </div>
                     </Modal>
+                </div>
 
-                    <div className="mt-8">
-                        <Link href="/dean/complaints" className="text-green-600 hover:underline font-bold">← กลับไปหน้ารายการ</Link>
-                    </div>
+                {/* Tracking Timeline */}
+                <ComplaintTracking complaintId={complaint.complaintId} />
+
+                {/* Back button */}
+                <div className="mt-6">
+                    <Link href="/dean/complaints" className="text-green-600 hover:underline font-bold">← กลับไปหน้ารายการ</Link>
                 </div>
             </div>
         </div>

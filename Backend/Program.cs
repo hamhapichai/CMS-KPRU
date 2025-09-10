@@ -23,7 +23,7 @@ builder.Services.Configure<WebhookOptions>(
     builder.Configuration.GetSection(WebhookOptions.SectionName));
 
 // Add HttpClient for webhooks
-builder.Services.AddHttpClient<IWebhookQueueService, WebhookQueueService>();
+builder.Services.AddHttpClient();
 
 // เพิ่ม CORS policy
 builder.Services.AddCors(options =>
@@ -60,9 +60,10 @@ builder.Services.AddScoped<IAISuggestionsRepository, AISuggestionsRepository>();
 builder.Services.AddScoped<IAISuggestionsService, AISuggestionsService>();
 
 // Webhook services
-builder.Services.AddSingleton<IWebhookQueueService, WebhookQueueService>();
+builder.Services.AddSingleton<WebhookQueueService>();
+builder.Services.AddSingleton<IWebhookQueueService>(provider => provider.GetRequiredService<WebhookQueueService>());
 builder.Services.AddScoped<IWebhookService, WebhookService>();
-builder.Services.AddHostedService<WebhookQueueService>();
+builder.Services.AddHostedService<WebhookQueueService>(provider => provider.GetRequiredService<WebhookQueueService>());
 
 var app = builder.Build();
 
@@ -82,7 +83,7 @@ using (var scope = app.Services.CreateScope())
     db.SaveChanges();
 
     // Seed Departments
-    var departments = new[] { "ฝ่ายบริหาร", "ฝ่ายบุคคล", "ฝ่ายไอที", "ฝ่ายบัญชี" };
+    var departments = new[] { "ฝ่ายไอที" };
     foreach (var deptName in departments)
     {
         if (!db.Departments.Any(d => d.DepartmentName == deptName))
@@ -150,7 +151,3 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

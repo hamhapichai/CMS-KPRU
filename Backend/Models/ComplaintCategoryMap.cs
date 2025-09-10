@@ -3,11 +3,11 @@ namespace Backend.Models
 {
     public class ComplaintCategoryMap
     {
-    [Key]
-    public int MapId { get; set; }
+        [Key]
+        public int MapId { get; set; }
         public int ComplaintId { get; set; }
-    public Complaint? Complaint { get; set; }
+        public Complaint? Complaint { get; set; }
         public int CategoryId { get; set; }
-    public ComplaintCategory? Category { get; set; }
+        public ComplaintCategory? Category { get; set; }
     }
 }

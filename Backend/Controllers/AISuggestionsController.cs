@@ -27,7 +27,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Callback([FromBody] AISuggestionCallbackDto dto)
         {
             _logger.LogInformation("Received AISuggestion callback request for ComplaintId: {ComplaintId}", dto?.ComplaintId);
-            
+
             try
             {
                 if (dto == null)
@@ -35,27 +35,27 @@ namespace Backend.Controllers
                     _logger.LogWarning("AISuggestion callback received null dto");
                     return BadRequest(new { success = false, message = "Request body is required" });
                 }
-                
+
                 if (!ModelState.IsValid)
                 {
                     _logger.LogWarning("Invalid model state for AISuggestion callback: {@ModelState}", ModelState);
-                    return BadRequest(new 
-                    { 
-                        success = false, 
+                    return BadRequest(new
+                    {
+                        success = false,
                         message = "Invalid request data",
                         errors = ModelState
                     });
                 }
 
                 var result = await _aiSuggestionsService.ProcessCallbackAsync(dto);
-                
+
                 if (!result.Success)
                 {
                     _logger.LogWarning("AISuggestion callback failed: {Message}", result.Message);
-                    
+
                     if (result.Message == "Complaint not found")
                         return NotFound(new { success = false, message = result.Message });
-                    
+
                     return BadRequest(new { success = false, message = result.Message });
                 }
 

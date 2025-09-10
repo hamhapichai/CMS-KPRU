@@ -19,7 +19,7 @@ const fetchDepartments = async (): Promise<{ id: number; name: string }[]> => {
   }
 
   isLoading = true;
-  console.log("Fetching departments from API..."); // Debug
+  
 
   try {
     const res = await fetch('/api/departments');
@@ -31,15 +31,15 @@ const fetchDepartments = async (): Promise<{ id: number; name: string }[]> => {
       .filter(d => d && typeof d.id === 'number' && d.name);
     
     departmentsCache = validDepartments;
-    console.log("Departments cached:", validDepartments); // Debug
+    
 
     // แจ้งให้ subscribers ทั้งหมด
     subscribers.forEach(callback => callback(validDepartments));
     subscribers.length = 0; // Clear subscribers
 
     return validDepartments;
-  } catch (err) {
-    console.error("Error loading departments:", err);
+  } catch {
+    
     return [];
   } finally {
     isLoading = false;
@@ -49,7 +49,7 @@ const fetchDepartments = async (): Promise<{ id: number; name: string }[]> => {
 // Export function สำหรับ clear cache เมื่อมีการอัพเดตข้อมูล
 export const clearDepartmentsCache = () => {
   departmentsCache = null;
-  console.log("Departments cache cleared");
+  
 };
 
 export default function DepartmentDropdown({ 
@@ -79,9 +79,9 @@ export default function DepartmentDropdown({
           setDepartments(data);
           setLoading(false);
         }
-      } catch (err) {
+      } catch {
         if (isMounted) {
-          console.error("Error in DepartmentDropdown:", err);
+          
           setDepartments([]);
           setLoading(false);
         }

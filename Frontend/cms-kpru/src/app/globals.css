@@ -1,24 +1,5 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f3f4f6;
-  --foreground: #222;
-  --card-bg: #fff;
-  --card-border: #e5e7eb;
-  --input-bg: #f9fafb;
-  --input-border: #d1d5db;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --danger: #ef4444;
-  --danger-hover: #dc2626;
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 /* Modal animations */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -44,47 +25,32 @@
   animation: scaleIn 0.15s ease-out;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #18181b;
-    --foreground: #ededed;
-    --card-bg: #232326;
-    --card-border: #333;
-    --input-bg: #232326;
-    --input-border: #444;
-    --primary: #60a5fa;
-    --primary-hover: #3b82f6;
-    --danger: #f87171;
-    --danger-hover: #ef4444;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #f3f4f6;
+  color: #222;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Card style for forms and panels */
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   padding: 2rem;
 }
 
 input, textarea, select {
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
   border-radius: 0.5rem;
   padding: 0.5rem 0.75rem;
-  color: var(--foreground);
+  color: #222;
 }
 
 button {
-  background: var(--primary);
-  color: #1b4bb4;
+  background: #2563eb;
+  color: #fff;
   border: none;
   border-radius: 0.5rem;
   padding: 0.5rem 1.25rem;
@@ -93,12 +59,97 @@ button {
   transition: background 0.2s;
 }
 button:hover {
-  background: var(--primary-hover);
+  background: #1d4ed8;
 }
 .btn-danger {
-  background: var(--danger);
+  background: #ef4444;
+  color: #fff;
 }
 .btn-danger:hover {
-  background: var(--danger-hover);
+  background: #dc2626;
 }
+.btn-logout {
+  background: #fff;
+  color: #ef4444;
+}
+.btn-logout:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Pagination styling */
+.pagination-container {
+  display: inline-flex;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  /* background-color: #f9fafb; */
+}
+
+.pagination-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s ease-in-out;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: #f9fafb;
+  box-shadow: none;
+  border: none;
+}
+
+.pagination-button.active {
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-button.green:hover:not(:disabled) {
+  background-color: #f0fdf4;
+  color: #15803d;
+}
+
+.pagination-button.green.active {
+  background-color: #16a34a;
+}
+
+.pagination-button.blue:hover:not(:disabled) {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.pagination-button.blue.active {
+  background-color: #2563eb;
+}
+
+/* Remove global button styling for pagination buttons */
+button.relative {
+  background: initial;
+  color: initial;
+  border: initial;
+  padding: initial;
+  font-weight: initial;
+  border-radius: initial;
+  transition: initial;
+}
+button.relative:hover {
+  background: initial;
 }

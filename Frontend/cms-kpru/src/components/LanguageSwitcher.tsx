@@ -1,15 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import globeIcon from "../../public/globe.svg";
-import { useRouter, usePathname } from "next/navigation";
+// import { useRouter, usePathname } from "next/navigation";
 
 export default function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const pathname = usePathname();
-  const currentLocale = pathname.split("/")[1] || "th";
+  // const router = useRouter();
+  // const pathname = usePathname();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -21,14 +18,14 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleChange = (value: string) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("lang", value);
-      const path = pathname.replace(/^\/(en|th)/, "");
-      router.push(`/${value}${path}`);
-    }
-    setOpen(false);
-  };
+  // const handleChange = (value: string) => {
+  //   if (typeof window !== "undefined") {
+  //     localStorage.setItem("lang", value);
+  //     const path = pathname.replace(/^\/(en|th)/, "");
+  //     router.push(`/${value}${path}`);
+  //   }
+  //   setOpen(false);
+  // };
 
-  return null;
+  return <div style={{ display: open ? 'block' : 'none' }} ref={dropdownRef}></div>;
 }

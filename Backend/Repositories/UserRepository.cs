@@ -22,9 +22,9 @@ namespace Backend.Repositories
 
             if (!string.IsNullOrWhiteSpace(searchDto.Search))
             {
-                query = query.Where(u => 
-                    u.Username.Contains(searchDto.Search) || 
-                    u.Email.Contains(searchDto.Search) || 
+                query = query.Where(u =>
+                    u.Username.Contains(searchDto.Search) ||
+                    u.Email.Contains(searchDto.Search) ||
                     u.FullName.Contains(searchDto.Search));
             }
 
@@ -58,7 +58,7 @@ namespace Backend.Repositories
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            
+
             // Reload with includes
             return await GetByIdAsync(user.UserId) ?? user;
         }

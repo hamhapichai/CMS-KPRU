@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 function ComplaintForm() {
+  const router = useRouter();
   const [form, setForm] = useState({
     contactName: "",
     contactEmail: "",
@@ -14,25 +16,16 @@ function ComplaintForm() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev: any) => ({
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = 'checked' in e.target ? e.target.checked : false;
+    setForm((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFiles(Array.from(e.target.files));
-    }
-  };
-
-  const handleRemoveFile = (idx: number) => {
-    setFiles(files.filter((_, i) => i !== idx));
-  };
-
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -66,18 +59,27 @@ function ComplaintForm() {
         throw new Error(data.message || "ส่งเรื่องไม่สำเร็จ");
       }
 
-      setSuccess(true);
-      setForm({ 
-        contactName: "", 
-        contactEmail: "", 
-        contactPhone: "", 
-        subject: "", 
-        message: "", 
-        isAnonymous: false 
-      });
-      setFiles([]);
-    } catch (err: any) {
-      setError(err.message);
+      // เมื่อสร้างเรื่องร้องเรียนสำเร็จ ให้ redirect ไปหน้า tracking
+      if (data.success && data.ticketId) {
+        // รอ 1 วินาทีเพื่อให้ผู้ใช้เห็น success message ก่อน redirect
+        setSuccess(true);
+        setTimeout(() => {
+          router.push(`/tracking/${data.ticketId}`);
+        }, 2000);
+      } else {
+        setSuccess(true);
+        setForm({ 
+          contactName: "", 
+          contactEmail: "", 
+          contactPhone: "", 
+          subject: "", 
+          message: "", 
+          isAnonymous: false 
+        });
+        setFiles([]);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
     } finally {
       setLoading(false);
     }
@@ -124,7 +126,7 @@ function ComplaintForm() {
             <label className="block mb-2 font-semibold text-gray-700">รายละเอียด</label>
             <textarea name="message" value={form.message} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-200 transition resize-y shadow-sm" rows={4} required />
           </div>
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <label className="block mb-2 font-semibold text-gray-700">แนบไฟล์/รูปภาพ (ถ้ามี)</label>
             <input type="file" multiple accept="image/*,application/pdf" onChange={handleFileChange} className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 shadow-sm" />
             {files.length > 0 && (
@@ -137,9 +139,19 @@ function ComplaintForm() {
                 ))}
               </ul>
             )}
-          </div>
+          </div> */}
           {error && <div className="text-red-500 mb-4 text-center font-semibold">{error}</div>}
-          {success && <div className="text-green-600 mb-4 text-center font-semibold">ส่งเรื่องสำเร็จ!</div>}
+          {success && (
+            <div className="text-green-600 mb-4 text-center font-semibold">
+              <div className="flex items-center justify-center mb-2">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                ส่งเรื่องสำเร็จ!
+              </div>
+              <p className="text-sm text-gray-600">กำลังไปยังหน้าติดตามสถานะ...</p>
+            </div>
+          )}
           <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-green-400 text-white py-3 rounded-xl shadow-lg hover:from-blue-600 hover:to-green-500 transition font-extrabold text-lg" disabled={loading}>
             {loading ? "กำลังส่ง..." : "ส่งเรื่องร้องเรียน"}
           </button>

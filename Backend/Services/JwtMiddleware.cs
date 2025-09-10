@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace Backend.Services
                 {
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var key = Encoding.UTF8.GetBytes(_key);
-                    tokenHandler.ValidateToken(token, new TokenValidationParameters
+                    var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -36,10 +37,15 @@ namespace Backend.Services
                         ValidateAudience = false,
                         ClockSkew = TimeSpan.Zero
                     }, out SecurityToken validatedToken);
-                    // สามารถ set user context ได้ที่นี่
+
+                    // Set user context จาก JWT claims
+                    context.User = principal;
+
+
                 }
-                catch
+                catch (Exception ex)
                 {
+
                     context.Response.StatusCode = 401;
                     await context.Response.WriteAsync("Invalid or expired token");
                     return;

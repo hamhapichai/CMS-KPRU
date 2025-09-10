@@ -18,7 +18,7 @@ namespace Backend.Models
         public DbSet<ComplaintCategory> ComplaintCategories { get; set; }
         public DbSet<ComplaintCategoryMap> ComplaintCategoryMaps { get; set; }
 
-    public DbSet<TestItem> TestItems { get; set; }
+        public DbSet<TestItem> TestItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,8 +30,18 @@ namespace Backend.Models
             modelBuilder.Entity<Complaint>().HasIndex(c => c.TicketId).IsUnique();
             modelBuilder.Entity<ComplaintCategory>().HasIndex(c => c.CategoryName).IsUnique();
 
-            // Ignore ambiguous navigation property for migration
-            modelBuilder.Entity<ComplaintAssignment>().Ignore(ca => ca.AISuggestionDept);
+            // Configure ComplaintAssignment relationships
+            modelBuilder.Entity<ComplaintAssignment>()
+                .HasOne(ca => ca.AssignedByUser)
+                .WithMany()
+                .HasForeignKey(ca => ca.AssignedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ComplaintAssignment>()
+                .HasOne(ca => ca.AssignedToUser)
+                .WithMany()
+                .HasForeignKey(ca => ca.AssignedToUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

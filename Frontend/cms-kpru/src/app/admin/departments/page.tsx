@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Modal from '@/components/Modal';
-import Table, { TableColumn } from '@/components/Table';
+import Table from '@/components/Table';
 
 interface Department {
   id: number;

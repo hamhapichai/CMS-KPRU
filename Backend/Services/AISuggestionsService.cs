@@ -21,7 +21,7 @@ namespace Backend.Services
         public async Task<AISuggestionCallbackResponseDto> ProcessCallbackAsync(AISuggestionCallbackDto dto)
         {
             _logger.LogInformation("Processing AISuggestion callback for ComplaintId: {ComplaintId}", dto.ComplaintId);
-            
+
             try
             {
                 // 1. Validate that the related ComplaintId exists
@@ -58,18 +58,19 @@ namespace Backend.Services
                     ComplaintId = dto.ComplaintId,
                     SuggestedDeptId = dto.SuggestedDeptId,
                     SuggestedCategory = dto.SuggestedCategory,
+                    SummarizedByAI = dto.SummarizedByAI,
                     ConfidenceScore = dto.ConfidenceScore,
                     SuggestedAt = DateTime.UtcNow, // 3. Set SuggestedAt
                     N8nWorkflowId = dto.N8nWorkflowId
                 };
 
-                _logger.LogInformation("Creating AISuggestion for ComplaintId: {ComplaintId}, Category: {Category}, Confidence: {Confidence}", 
+                _logger.LogInformation("Creating AISuggestion for ComplaintId: {ComplaintId}, Category: {Category}, Confidence: {Confidence}",
                     aiSuggestion.ComplaintId, aiSuggestion.SuggestedCategory, aiSuggestion.ConfidenceScore);
 
                 // 4. Save to database
                 var createdSuggestion = await _repository.CreateAsync(aiSuggestion);
-                
-                _logger.LogInformation("AISuggestion saved successfully with ID: {AISuggestionId} for ComplaintId: {ComplaintId}", 
+
+                _logger.LogInformation("AISuggestion saved successfully with ID: {AISuggestionId} for ComplaintId: {ComplaintId}",
                     createdSuggestion.AISuggestionId, createdSuggestion.ComplaintId);
 
                 return new AISuggestionCallbackResponseDto
@@ -128,6 +129,7 @@ namespace Backend.Services
                 ComplaintId = dto.ComplaintId,
                 SuggestedDeptId = dto.SuggestedDeptId,
                 SuggestedCategory = dto.SuggestedCategory,
+                SummarizedByAI = dto.SummarizedByAI,
                 ConfidenceScore = dto.ConfidenceScore,
                 SuggestedAt = DateTime.UtcNow,
                 N8nWorkflowId = dto.N8nWorkflowId
@@ -146,6 +148,7 @@ namespace Backend.Services
                 SuggestedDeptId = suggestion.SuggestedDeptId,
                 DepartmentName = suggestion.SuggestedDept?.DepartmentName,
                 SuggestedCategory = suggestion.SuggestedCategory,
+                SummarizedByAI = suggestion.SummarizedByAI,
                 ConfidenceScore = suggestion.ConfidenceScore,
                 SuggestedAt = suggestion.SuggestedAt,
                 N8nWorkflowId = suggestion.N8nWorkflowId
